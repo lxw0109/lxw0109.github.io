@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="1.信息熵(information entropy)信息熵是表示随机变量不确定性的度量。随机事件的不确定性叫做“熵”. 信息量的量化度量叫做“熵”.变量的不确定性越大，熵就越大，要把它搞清楚所需要的信息量也就越大. 熵的公式如下(李航《统计学习方法》 P60):    H(X) = -\sum_{i=1}^{n}p_i\log{p_i}信息熵通常用来描述整个随机分布所带来的信息量平均值，更具统计特">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Basic Concepts in Machine Learning">
+<meta property="og:url" content="http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="1.信息熵(information entropy)信息熵是表示随机变量不确定性的度量。随机事件的不确定性叫做“熵”. 信息量的量化度量叫做“熵”.变量的不确定性越大，熵就越大，要把它搞清楚所需要的信息量也就越大. 熵的公式如下(李航《统计学习方法》 P60):    H(X) = -\sum_{i=1}^{n}p_i\log{p_i}信息熵通常用来描述整个随机分布所带来的信息量平均值，更具统计特">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/gradient_descent.png">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/gradient_descent_property.png">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/learning_rates_setting.jpg">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.617Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Basic Concepts in Machine Learning">
+<meta name="twitter:description" content="1.信息熵(information entropy)信息熵是表示随机变量不确定性的度量。随机事件的不确定性叫做“熵”. 信息量的量化度量叫做“熵”.变量的不确定性越大，熵就越大，要把它搞清楚所需要的信息量也就越大. 熵的公式如下(李航《统计学习方法》 P60):    H(X) = -\sum_{i=1}^{n}p_i\log{p_i}信息熵通常用来描述整个随机分布所带来的信息量平均值，更具统计特">
+<meta name="twitter:image" content="http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/gradient_descent.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>Basic Concepts in Machine Learning</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/01/27/Learning-Notes-on-numpy/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&text=Basic Concepts in Machine Learning"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&is_video=false&description=Basic Concepts in Machine Learning"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Basic Concepts in Machine Learning&body=Check out this article: http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&name=Basic Concepts in Machine Learning&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-信息熵-information-entropy"><span class="toc-number">1.</span> <span class="toc-text">1.信息熵(information entropy)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-互信息-mutual-information"><span class="toc-number">2.</span> <span class="toc-text">2.互信息(mutual information)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-信息增益-information-gain"><span class="toc-number">3.</span> <span class="toc-text">3.信息增益(information gain)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-相对熵（也叫-交叉熵）"><span class="toc-number">4.</span> <span class="toc-text">4.相对熵（也叫 交叉熵）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-马尔可夫假设"><span class="toc-number">5.</span> <span class="toc-text">5.马尔可夫假设</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-激活函数"><span class="toc-number">6.</span> <span class="toc-text">6.激活函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-损失函数-amp-风险函数"><span class="toc-number">7.</span> <span class="toc-text">7.损失函数 &amp; 风险函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-梯度下降法-Gradient-Descent"><span class="toc-number">8.</span> <span class="toc-text">8.梯度下降法(Gradient Descent)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-学习率的设置"><span class="toc-number">9.</span> <span class="toc-text">9.学习率的设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-PCA降维"><span class="toc-number">10.</span> <span class="toc-text">10. PCA降维</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Bootstrap方法"><span class="toc-number">11.</span> <span class="toc-text">11. Bootstrap方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pitfalls"><span class="toc-number">12.</span> <span class="toc-text">Pitfalls</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Basic Concepts in Machine Learning
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-01-18T03:36:08.000Z" itemprop="datePublished">2018-01-18</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Machine-Learning/">Machine Learning</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="1-信息熵-information-entropy"><a href="#1-信息熵-information-entropy" class="headerlink" title="1.信息熵(information entropy)"></a>1.信息熵(information entropy)</h3><p>信息熵是表示随机变量不确定性的度量。随机事件的不确定性叫做“熵”. 信息量的量化度量叫做“熵”.变量的不确定性越大，熵就越大，要把它搞清楚所需要的信息量也就越大. 熵的公式如下(李航《统计学习方法》 P60):  </p>
+<script type="math/tex; mode=display">
+H(X) = -\sum_{i=1}^{n}p_i\log{p_i}</script><p><strong>信息熵通常用来描述整个随机分布所带来的信息量平均值</strong>，更具统计特性。<strong>信息熵也叫香农熵</strong>，在机器学习中，由于熵的计算是依据样本数据而来，故也叫<strong>经验熵</strong>。  </p>
+<p>条件熵公式如下(李航《统计学习方法》 P61):  </p>
+<script type="math/tex; mode=display">
+H(Y|X) = \sum_{i=1}^{n}P(X=x_i)H(Y|X=x_i)</script><p>根据熵的连锁规则，有 $H(X,Y) = H(X) + H(Y|X) = H(Y) + H(X|Y)$, 因此可以推出$H(X) - H(X|Y) = H(Y) - H(Y|X)$</p>
+<h3 id="2-互信息-mutual-information"><a href="#2-互信息-mutual-information" class="headerlink" title="2.互信息(mutual information)"></a>2.互信息(mutual information)</h3><p><strong>两个随机事件的相关性的量化度量叫做“互信息”</strong>.  </p>
+<script type="math/tex; mode=display">
+I(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X)</script><p><strong>互信息是熵与条件熵的差(熵与条件熵之差称为互信息. 李航《统计学习方法》P61)</strong>, 取值在0到min(H(X), H(Y))之间，当X和Y完全相关时，它的取值为H(X)，且H(X) = H(Y)；当两者完全无关时，它的取值为0。</p>
+<h3 id="3-信息增益-information-gain"><a href="#3-信息增益-information-gain" class="headerlink" title="3.信息增益(information gain)"></a>3.信息增益(information gain)</h3><p><strong>信息增益表示得知特征X的信息而使得类Y的信息的不确定性减少的程度</strong>(对比“互信息”和“信息增益”的定义)。<br>决策树学习中的信息增益等价于训练数据集中类与特征的互信息。李航《统计学习方法》 P61  </p>
+<h3 id="4-相对熵（也叫-交叉熵）"><a href="#4-相对熵（也叫-交叉熵）" class="headerlink" title="4.相对熵（也叫 交叉熵）"></a>4.相对熵（也叫 交叉熵）</h3><p>相对熵用于衡量两个取值为正数的函数的相关性.  </p>
+<ul>
+<li>对于两个完全相同的函数，它们的相对熵为0</li>
+<li>相对熵越大，两个函数的差异越大；反之，相对熵越小，差异越小</li>
+<li>对于概率分布或者概率密度函数，如果取值均大于0，相对熵可以度量两个随机分布的差异性</li>
+</ul>
+<h3 id="5-马尔可夫假设"><a href="#5-马尔可夫假设" class="headerlink" title="5.马尔可夫假设"></a>5.马尔可夫假设</h3><p>马尔可夫为了简化问题，提出了一种简化的假设：即随机过程中各个状态$S<em>t$的概率分布，只与它的前一个状态$S</em>{t-1}$有关，即$P(S<em>t|S_1, S_2,…, S</em>{t-1}) = P(S<em>t|S</em>{t-1})$。<br>这个假设后来被命名为马尔可夫假设，而符合这个假设的随机过程称为马尔可夫过程，也称为马尔可夫链。<br>[数学之美 P53]  </p>
+<h3 id="6-激活函数"><a href="#6-激活函数" class="headerlink" title="6.激活函数"></a>6.激活函数</h3><ol>
+<li>不用激活函数可不可以?<br>答案是不可以。<strong>激活函数的主要作用是提供网络的非线性建模能力</strong>。如果没有激活函数，那么该网络仅能够表达线性映射，此时<strong>即便有再多的隐藏层，其整个网络跟单层神经网络也是等价的</strong>。因此也可以认为，只有加入了激活函数之后，深度神经网络才具备了分层的非线性映射学习能力。</li>
+<li>激活函数应该具有什么样的性质?  <ul>
+<li>可微性: 当优化方法是基于梯度的时候，这个性质是必须的</li>
+<li>单调性: 当激活函数是单调的时候，单层网络能够保证是凸函数</li>
+<li>输出值的范围: 当激活函数输出值是”有限”的时候，基于梯度的优化方法会更加稳定，因为特征的表示受有限权值的影响更显著;当激活函数的输出是”无限”的时候，模型的训练会更加高效，不过在这种情况下，一般需要更小的learning rate</li>
+</ul>
+</li>
+<li>常见的激活函数多是分段线性和具有指数形状的非线性函数, 例如: sigmoid、tanh、ReLU(Leaky-ReLU、P-ReLU)、ELU、Maxout。各种激活函数的函数曲线以及优缺点请参见<a href="http://blog.csdn.net/u014595019/article/details/52562159" target="_blank" rel="noopener">这里</a>。</li>
+</ol>
+<h3 id="7-损失函数-amp-风险函数"><a href="#7-损失函数-amp-风险函数" class="headerlink" title="7.损失函数 &amp; 风险函数"></a>7.损失函数 &amp; 风险函数</h3><p>参考 李航《统计学习方法》 P7<br><strong>损失函数</strong>是度量模型一次预测的好坏; <strong>风险函数</strong>是度量平均意义下模型预测的好坏<br><strong>损失函数</strong>(loss function)和代价函数(cost function)是同一个东西, 用来度量预测错误的程度.<br>损失函数是预测值f(X)和真实值Y的非负实值函数，记作L(Y, f(X)). 常用的损失函数包括：0-1损失函数、平方损失函数、绝对损失函数、对数损失函数.<br>损失函数的期望是理论上模型f(X)关于联合分布P(X,Y)的平均意义下的损失，称为<strong>风险函数</strong>(risk function)或期望损失(expected loss).  </p>
+<!-- References -->
+<h3 id="8-梯度下降法-Gradient-Descent"><a href="#8-梯度下降法-Gradient-Descent" class="headerlink" title="8.梯度下降法(Gradient Descent)"></a>8.梯度下降法(Gradient Descent)</h3><p>梯度下降法求代价函数(cost function)的最小值, 梯度下降法要求所有的参数必须同时更新(simultaneous update)<br><img src="./gradient_descent.png" alt="gradient_descent.png"><br><img src="./gradient_descent_property.png" alt="gradient_descent_property.png"></p>
+<h3 id="9-学习率的设置"><a href="#9-学习率的设置" class="headerlink" title="9.学习率的设置"></a>9.学习率的设置</h3><p><img src="./learning_rates_setting.jpg" alt="learning_rates_setting.jpg"><br><strong>References:</strong><br><a href="https://www.kaggle.com/yassineghouzam/introduction-to-cnn-keras-0-997-top-6" target="_blank" rel="noopener">Introduction to CNN Keras - 0.997 (top 6%)
+</a>文中有动态调整学习率的实现方法</p>
+<h3 id="10-PCA降维"><a href="#10-PCA降维" class="headerlink" title="10. PCA降维"></a>10. PCA降维</h3><blockquote>
+<p>So for finding features usable for any kind of model a PCA without normalization would perform badly.</p>
+</blockquote>
+<p><strong>References:</strong><br><a href="https://stats.stackexchange.com/questions/69157/why-do-we-need-to-normalize-data-before-principal-component-analysis-pca?newreg=4f0cdbec11ff4d99ab86a607041a459d" target="_blank" rel="noopener">Why do we need to normalize data before principal component analysis (PCA)?</a></p>
+<h3 id="11-Bootstrap方法"><a href="#11-Bootstrap方法" class="headerlink" title="11. Bootstrap方法"></a>11. Bootstrap方法</h3><p>Bootstrap是统计学习中一种重采样（Resampling）技术。机器学习中的Bagging，AdaBoost等方法其实都蕴含了Bootstrap的思想。<br>Bootstrap的一般的抽样方式都是<strong>“有放回地全抽”</strong>（其实样本量也要视情况而定，不一定非要与原样本量相等），意思就是抽取的Bootstrap样本量与原样本相同，只是在抽样方式上采取有放回地抽，这样的抽样可以进行B次，每次都可以求一个相应的统计量/估计量，最后看看这个统计量的稳定性如何（用方差表示）。<br>Bootstrap法是以原始数据为基础的模拟抽样统计推断法，可用于研究一组数据的某统计量的分布特征，特别适用于那些难以用常规方法导出对参数的区间估计、假设检验等问题。<strong>其基本思想是</strong>：在原始数据的范围内作<strong>有放回</strong>的再抽样, <strong>样本容量仍为n</strong>，原始数据中每个观察单位每次被抽到的概率相等为1/n , 所得样本称为Bootstrap样本。<br><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://blog.csdn.net/baimafujinji/article/details/50554664" target="_blank" rel="noopener">Bootstrap方法详解——技术与实例</a></li>
+</ul>
+<h3 id="Pitfalls"><a href="#Pitfalls" class="headerlink" title="Pitfalls"></a>Pitfalls</h3><ol>
+<li>当要to_categorical()的数据中存在负数时就会出现问题，所以在使用to_categorical()时必须将数据处理成非负数<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># NOTE: np_utils.to_categorical() does not take negative values</span><br><span class="line">Y = np_utils.to_categorical(Y, num_classes=2)</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-信息熵-information-entropy"><span class="toc-number">1.</span> <span class="toc-text">1.信息熵(information entropy)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-互信息-mutual-information"><span class="toc-number">2.</span> <span class="toc-text">2.互信息(mutual information)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-信息增益-information-gain"><span class="toc-number">3.</span> <span class="toc-text">3.信息增益(information gain)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-相对熵（也叫-交叉熵）"><span class="toc-number">4.</span> <span class="toc-text">4.相对熵（也叫 交叉熵）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-马尔可夫假设"><span class="toc-number">5.</span> <span class="toc-text">5.马尔可夫假设</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-激活函数"><span class="toc-number">6.</span> <span class="toc-text">6.激活函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-损失函数-amp-风险函数"><span class="toc-number">7.</span> <span class="toc-text">7.损失函数 &amp; 风险函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-梯度下降法-Gradient-Descent"><span class="toc-number">8.</span> <span class="toc-text">8.梯度下降法(Gradient Descent)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-学习率的设置"><span class="toc-number">9.</span> <span class="toc-text">9.学习率的设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-PCA降维"><span class="toc-number">10.</span> <span class="toc-text">10. PCA降维</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Bootstrap方法"><span class="toc-number">11.</span> <span class="toc-text">11. Bootstrap方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pitfalls"><span class="toc-number">12.</span> <span class="toc-text">Pitfalls</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&text=Basic Concepts in Machine Learning"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&is_video=false&description=Basic Concepts in Machine Learning"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Basic Concepts in Machine Learning&body=Check out this article: http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&title=Basic Concepts in Machine Learning"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/01/18/Basic-Concepts-in-Machine-Learning/&name=Basic Concepts in Machine Learning&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

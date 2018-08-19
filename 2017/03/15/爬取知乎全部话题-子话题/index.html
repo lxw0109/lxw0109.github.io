@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="分析使用Chome浏览器打开知乎的话题广场页面，可以看到页面中有话题分类，每个分类下面又有子话题，但每次默认只显示20个子话题，要获取全部的子话题，需要不断的“点击”下面的“更多”按钮，因此可以有两种方法来实现:  通过selenium来实现(模拟鼠标点击) 通过分析“点击”按钮触发时请求，模拟请求来进行抓取  selenium爬取方式速度慢，因此这里不对该方法的使用做进一步说明。此处针对模拟请求">
+<meta name="keywords" content="Python,Spider,XPath,Zhihu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬取知乎全部话题-子话题">
+<meta property="og:url" content="http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="分析使用Chome浏览器打开知乎的话题广场页面，可以看到页面中有话题分类，每个分类下面又有子话题，但每次默认只显示20个子话题，要获取全部的子话题，需要不断的“点击”下面的“更多”按钮，因此可以有两种方法来实现:  通过selenium来实现(模拟鼠标点击) 通过分析“点击”按钮触发时请求，模拟请求来进行抓取  selenium爬取方式速度慢，因此这里不对该方法的使用做进一步说明。此处针对模拟请求">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/clickInternet.png">
+<meta property="og:image" content="http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/clickMore.png">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.642Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="爬取知乎全部话题-子话题">
+<meta name="twitter:description" content="分析使用Chome浏览器打开知乎的话题广场页面，可以看到页面中有话题分类，每个分类下面又有子话题，但每次默认只显示20个子话题，要获取全部的子话题，需要不断的“点击”下面的“更多”按钮，因此可以有两种方法来实现:  通过selenium来实现(模拟鼠标点击) 通过分析“点击”按钮触发时请求，模拟请求来进行抓取  selenium爬取方式速度慢，因此这里不对该方法的使用做进一步说明。此处针对模拟请求">
+<meta name="twitter:image" content="http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/clickInternet.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>爬取知乎全部话题-子话题</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/03/20/为什么要使用装饰器Decorator/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/02/18/Book-Notes-Effective-Python/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&text=爬取知乎全部话题-子话题"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&is_video=false&description=爬取知乎全部话题-子话题"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=爬取知乎全部话题-子话题&body=Check out this article: http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&name=爬取知乎全部话题-子话题&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#分析"><span class="toc-number">1.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爬取话题和对应的topic-id"><span class="toc-number">2.</span> <span class="toc-text">爬取话题和对应的topic_id</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爬取子话题"><span class="toc-number">3.</span> <span class="toc-text">爬取子话题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#完整代码"><span class="toc-number">4.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#References"><span class="toc-number">5.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        爬取知乎全部话题-子话题
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-03-15T10:18:18.000Z" itemprop="datePublished">2017-03-15</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Python/">Python</a>, <a class="tag-link" href="/tags/Spider/">Spider</a>, <a class="tag-link" href="/tags/XPath/">XPath</a>, <a class="tag-link" href="/tags/Zhihu/">Zhihu</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>使用Chome浏览器打开知乎的<a href="https://www.zhihu.com/topics" target="_blank" rel="noopener">话题广场页面</a>，可以看到页面中有话题分类，每个分类下面又有子话题，但每次默认只显示20个子话题，要获取全部的子话题，需要不断的“点击”下面的“更多”按钮，因此可以有两种方法来实现:</p>
+<ul>
+<li>通过selenium来实现(模拟鼠标点击)</li>
+<li>通过分析“点击”按钮触发时请求，模拟请求来进行抓取</li>
+</ul>
+<p>selenium爬取方式速度慢，因此这里不对该方法的使用做进一步说明。此处针对模拟请求的方式来进行爬取:<br>首先，在浏览器界面，按下键盘<code>F12</code>，选择<code>Network</code>选项卡(建议勾选<code>&quot;Preseve log&quot;</code>)。此时，点击知乎上的“互联网”话题，可以看到如下图所示的两个请求数据包：<br><img src="./clickInternet.png" alt="img"><br>由上图可知，当点击“互联网”话题时浏览器是通过发送<code>POST请求</code>来取得知乎话题数据。该请求的url地址为<a href="https://www.zhihu.com/node/TopicsPlazzaListV2" target="_blank" rel="noopener">https://www.zhihu.com/node/TopicsPlazzaListV2</a>，在<code>POST请求</code>的数据部分:<code>topic_id</code>指话题id(此处对应“互联网”话题的话题id就是99)，<code>offset</code>是指偏移量，指每次执行<code>next</code>方法(<code>method:next</code>)加载的子话题数量，<code>hash_id</code>可以为空我们直接忽略。<br>此时我们点击网页中的<code>更多</code>来查看更多的子话题，并查看网络请求包的变化，如下图所示:<br><img src="./clickMore.png" alt="img"><br>可以看出，当每次点击<code>更多</code>加载数据时，在<code>POST请求</code>的数据部分<code>offset</code>偏移递增20(点击多次<code>更多</code>可得道验证)。此外当我们切换话题时(如点击<code>游戏</code>/<code>运动</code>/<code>艺术</code>)，<code>POST请求</code>的数据部分的<code>topic_id</code>都会相应改变。<br>因此为了爬取所有的话题和子话题，我们需要做两个工作：</p>
+<ul>
+<li>爬取所有的话题和相应的<code>topic_id</code>(爬取子话题时<code>POST请求</code>的数据部分需要<code>topic_id</code>)</li>
+<li>爬取所有的子话题，发送<code>POST请求</code>来进行抓取</li>
+</ul>
+<h4 id="爬取话题和对应的topic-id"><a href="#爬取话题和对应的topic-id" class="headerlink" title="爬取话题和对应的topic_id"></a>爬取话题和对应的<code>topic_id</code></h4><p>这一步很简单，直接获取源码，然后通过<code>xpath</code>解析即可:<br>右键查看网页源代码<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"zm-topic-cat-item"</span> <span class="attr">data-id</span>=<span class="string">"253"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#游戏"</span>&gt;</span>游戏<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"zm-topic-cat-item"</span> <span class="attr">data-id</span>=<span class="string">"833"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#运动"</span>&gt;</span>运动<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"zm-topic-cat-item"</span> <span class="attr">data-id</span>=<span class="string">"99"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#互联网"</span>&gt;</span>互联网<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>可知，所有的话题和<code>topic_id</code>都在<code>class=&quot;zm-topic-cat-item&quot;</code>的<code>&lt;li&gt;</code>标签中，因此，话题和<code>topic_id</code>爬取代码如下:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line">session = requests.session()</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">"User-Agent"</span>:<span class="string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/56.0.2924.76 Chrome/56.0.2924.76 Safari/537.36"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">req = session.get(<span class="string">"https://www.zhihu.com/topics"</span>, headers=headers)</span><br><span class="line">selector = etree.HTML(req.text)</span><br><span class="line">topicList = selector.xpath(<span class="string">'//li[@class="zm-topic-cat-item"]'</span>)</span><br><span class="line"><span class="comment">#print len(topicList)</span></span><br><span class="line">topicIDList = []</span><br><span class="line">topicNameList = []</span><br><span class="line"><span class="keyword">for</span> topic <span class="keyword">in</span> topicList:</span><br><span class="line">    topicIDList.append(topic.xpath(<span class="string">'./@data-id'</span>)[<span class="number">0</span>])</span><br><span class="line">    topicNameList.append(topic.xpath(<span class="string">'./a/text()'</span>)[<span class="number">0</span>])</span><br><span class="line">topicDict = dict(zip(topicIDList, topicNameList))</span><br></pre></td></tr></table></figure></p>
+<p>最后的<code>topicDict</code>就是话题和对应的<code>topic_id</code>。</p>
+<h4 id="爬取子话题"><a href="#爬取子话题" class="headerlink" title="爬取子话题"></a>爬取子话题</h4><p>比较麻烦的就是子话题的抓取。如<code>1.分析</code>中的分析，我们要构建<code>POST请求</code>，主要是其中的数据部分:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data = &#123;</span><br><span class="line">    <span class="string">"method"</span>:<span class="string">"next"</span>,</span><br><span class="line">    <span class="string">"params"</span>: <span class="string">'&#123;"topic_id":'</span> + str(topic_id) + <span class="string">',"offset":'</span> + str(offset) + <span class="string">',"hash_id":""&#125;'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在<code>2.爬取话题和对应的topic_id</code>中我们有了全部的<code>topic_id</code>，<code>offset</code>每次递增20，因此<code>POST请求</code>的数据部分也构建完毕，我们查看能够得到我们想要的数据，得到的响应数据如下:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "r":0,</span><br><span class="line">    "msg":[</span><br><span class="line">        "<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item"</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"blk"</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">href</span>=<span class="string">"/topic/19550757"</span>&gt;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"https://pic3.zhimg.com/127ee131a4487388e104da2bba7a4df6_xs.jpg"</span> <span class="attr">alt</span>=<span class="string">"腾讯"</span>&gt;</span> <span class="tag">&lt;<span class="name">strong</span>&gt;</span>腾讯<span class="tag">&lt;/<span class="name">strong</span>&gt;</span> <span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span>&gt;</span>中国最大的互联网综合服务提供公司，主营以腾讯网、QQ、微信、腾…<span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"t::-176"</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span> <span class="attr">class</span>=<span class="string">"follow meta-item zg-follow"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"z-icon-follow"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>关注<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>",</span><br><span class="line">        "<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item"</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"blk"</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">href</span>=<span class="string">"/topic/19854644"</span>&gt;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"https://pic1.zhimg.com/e9c699fa4_xs.jpg"</span> <span class="attr">alt</span>=<span class="string">"余额宝"</span>&gt;</span> <span class="tag">&lt;<span class="name">strong</span>&gt;</span>余额宝<span class="tag">&lt;/<span class="name">strong</span>&gt;</span> <span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span>&gt;</span>余额宝创立于2013年6月，是蚂蚁金服旗下的一项余额增值服务和…<span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"t::-103570"</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span> <span class="attr">class</span>=<span class="string">"follow meta-item zg-follow"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"z-icon-follow"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>关注<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>",</span><br><span class="line">        "<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item"</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"blk"</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">href</span>=<span class="string">"/topic/19551460"</span>&gt;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"https://pic3.zhimg.com/e75e39ed2_xs.jpg"</span> <span class="attr">alt</span>=<span class="string">"百度"</span>&gt;</span> <span class="tag">&lt;<span class="name">strong</span>&gt;</span>百度<span class="tag">&lt;/<span class="name">strong</span>&gt;</span> <span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span>&gt;</span>中国互联网公司之一，占有中国搜索引擎市场五成以上的份额。旗下有…<span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"t::-413"</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span> <span class="attr">class</span>=<span class="string">"follow meta-item zg-follow"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"z-icon-follow"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>关注<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>",</span><br><span class="line">	...</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>显然我们关注的数据都在<code>&quot;msg&quot;</code>字段中，并且<code>&quot;msg&quot;</code>字段对应的value是一个字符串数组(字符串内容是一个<code>xml</code>格式文本，可以直接使用<code>xpath</code>进行提取)。<br>至此，还有一个问题，每次<code>offset</code>递增20，什么时候不再递增了呢？通过进一步调试我们可以发现当<code>sourceCodeDict[&quot;msg&quot;] == []</code>时表示当前话题的子话题都提取到了。</p>
+<h4 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"><span class="comment"># Usage: 话题广场话题和子话题抓取</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pymongo</span><br><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line"><span class="keyword">from</span> publicUtils <span class="keyword">import</span> generateLogger</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">errorLog = generateLogger(<span class="string">"topicSquareError"</span>)</span><br><span class="line">debugLog = generateLogger(<span class="string">"topicSquareDebug"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getTopics</span><span class="params">()</span>:</span></span><br><span class="line">    session = requests.session()</span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">"User-Agent"</span>:<span class="string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/56.0.2924.76 Chrome/56.0.2924.76 Safari/537.36"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">#爬取话题和对应的topic_id</span></span><br><span class="line">    req = session.get(<span class="string">"https://www.zhihu.com/topics"</span>, headers=headers)</span><br><span class="line">    selector = etree.HTML(req.text)</span><br><span class="line">    topicList = selector.xpath(<span class="string">'//li[@class="zm-topic-cat-item"]'</span>)</span><br><span class="line">    <span class="comment">#print len(topicList)</span></span><br><span class="line">    topicIDList = []</span><br><span class="line">    topicNameList = []</span><br><span class="line">    <span class="keyword">for</span> topic <span class="keyword">in</span> topicList:</span><br><span class="line">        topicIDList.append(topic.xpath(<span class="string">'./@data-id'</span>)[<span class="number">0</span>])</span><br><span class="line">        topicNameList.append(topic.xpath(<span class="string">'./a/text()'</span>)[<span class="number">0</span>])</span><br><span class="line">    topicDict = dict(zip(topicIDList, topicNameList))</span><br><span class="line">    <span class="comment">#print json.dumps(topicDict, ensure_ascii=False)</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">#爬取子话题</span></span><br><span class="line">    <span class="keyword">for</span> topicID <span class="keyword">in</span> topicDict:</span><br><span class="line">        url = <span class="string">"https://www.zhihu.com/topics#"</span> + topicDict[topicID]</span><br><span class="line">        debugLog.debug(<span class="string">"\n"</span> + <span class="string">"--"</span> * <span class="number">36</span> + <span class="string">"\n"</span> + topicDict[topicID] + <span class="string">"\n"</span> + <span class="string">"--"</span> * <span class="number">36</span>)</span><br><span class="line">        index = <span class="number">-20</span></span><br><span class="line">        <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">            index += <span class="number">20</span></span><br><span class="line">            <span class="comment">#print "index:", index</span></span><br><span class="line">            data = &#123;</span><br><span class="line">                <span class="string">"method"</span>:<span class="string">"next"</span>,</span><br><span class="line">                <span class="string">"params"</span>: <span class="string">'&#123;"topic_id":'</span> + str(topicID) + <span class="string">',"offset":'</span> + str(index) + <span class="string">',"hash_id":""&#125;'</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                sourceCode = session.post(<span class="string">"https://www.zhihu.com/node/TopicsPlazzaListV2"</span>, data=data, headers=headers).content</span><br><span class="line">                sourceCodeDict = json.loads(sourceCode)</span><br><span class="line">                subTopicList = sourceCodeDict[<span class="string">"msg"</span>]</span><br><span class="line">                <span class="keyword">if</span> subTopicList == []:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                <span class="keyword">for</span> subTopic <span class="keyword">in</span> subTopicList:</span><br><span class="line">                    selector = etree.HTML(subTopic)</span><br><span class="line">                    debugLog.debug(selector.xpath(<span class="string">"//strong/text()"</span>)[<span class="number">0</span>])</span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> ce:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    getTopics()</span><br></pre></td></tr></table></figure>
+<h4 id="References"><a href="#References" class="headerlink" title="References"></a>References</h4><ul>
+<li><a href="http://www.tuicool.com/articles/ZNzAbq" target="_blank" rel="noopener">爬虫获取知乎话题</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#分析"><span class="toc-number">1.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爬取话题和对应的topic-id"><span class="toc-number">2.</span> <span class="toc-text">爬取话题和对应的topic_id</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爬取子话题"><span class="toc-number">3.</span> <span class="toc-text">爬取子话题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#完整代码"><span class="toc-number">4.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#References"><span class="toc-number">5.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&text=爬取知乎全部话题-子话题"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&is_video=false&description=爬取知乎全部话题-子话题"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=爬取知乎全部话题-子话题&body=Check out this article: http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&title=爬取知乎全部话题-子话题"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2017/03/15/爬取知乎全部话题-子话题/&name=爬取知乎全部话题-子话题&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

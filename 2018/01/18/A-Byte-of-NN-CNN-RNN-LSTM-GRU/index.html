@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="普通神经网络(Neural Network, NN)、卷积神经网络(Convolutional Neural Network, CNN)、循环神经网络(Recurrent Neural Network, RNN)、长短期记忆(Long Short Term Memory, LSTM)、门控循环单元(Gated Recurrent Unit, GRU)五类神经网络大体的演化过程如下图所示:NN -&amp;">
+<meta name="keywords" content="Machine Learning,Neural Network,CNN,RNN,LSTM,GRU">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Byte of NN&#x2F;CNN&#x2F;RNN&#x2F;LSTM&#x2F;GRU">
+<meta property="og:url" content="http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="普通神经网络(Neural Network, NN)、卷积神经网络(Convolutional Neural Network, CNN)、循环神经网络(Recurrent Neural Network, RNN)、长短期记忆(Long Short Term Memory, LSTM)、门控循环单元(Gated Recurrent Unit, GRU)五类神经网络大体的演化过程如下图所示:NN -&amp;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/NN_vs_CNN.jpeg">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/CNN_convolutional.jpeg">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/pooling.jpeg">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.612Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="A Byte of NN&#x2F;CNN&#x2F;RNN&#x2F;LSTM&#x2F;GRU">
+<meta name="twitter:description" content="普通神经网络(Neural Network, NN)、卷积神经网络(Convolutional Neural Network, CNN)、循环神经网络(Recurrent Neural Network, RNN)、长短期记忆(Long Short Term Memory, LSTM)、门控循环单元(Gated Recurrent Unit, GRU)五类神经网络大体的演化过程如下图所示:NN -&amp;">
+<meta name="twitter:image" content="http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/NN_vs_CNN.jpeg">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>A Byte of NN/CNN/RNN/LSTM/GRU</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/01/18/Basic-Concepts-in-Machine-Learning/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/12/27/Sending-Forged-Email/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&text=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&is_video=false&description=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=A Byte of NN/CNN/RNN/LSTM/GRU&body=Check out this article: http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&name=A Byte of NN/CNN/RNN/LSTM/GRU&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、卷积神经网络-Convolutional-Neural-Network-CNN"><span class="toc-number">1.</span> <span class="toc-text">一、卷积神经网络(Convolutional Neural Network, CNN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、循环神经网络-Recurrent-Neural-Network-RNN"><span class="toc-number">2.</span> <span class="toc-text">二、循环神经网络(Recurrent Neural Network, RNN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、长短期记忆-Long-Short-Term-Memory-LSTM-网络"><span class="toc-number">3.</span> <span class="toc-text">三、长短期记忆(Long Short Term Memory, LSTM)网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、门控循环单元-Gated-Recurrent-Unit-GRU"><span class="toc-number">4.</span> <span class="toc-text">四、门控循环单元(Gated Recurrent Unit, GRU)</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        A Byte of NN/CNN/RNN/LSTM/GRU
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-01-18T01:38:57.000Z" itemprop="datePublished">2018-01-18</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/CNN/">CNN</a>, <a class="tag-link" href="/tags/GRU/">GRU</a>, <a class="tag-link" href="/tags/LSTM/">LSTM</a>, <a class="tag-link" href="/tags/Machine-Learning/">Machine Learning</a>, <a class="tag-link" href="/tags/Neural-Network/">Neural Network</a>, <a class="tag-link" href="/tags/RNN/">RNN</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>普通神经网络(Neural Network, NN)、卷积神经网络(Convolutional Neural Network, CNN)、循环神经网络(Recurrent Neural Network, RNN)、长短期记忆(Long Short Term Memory, LSTM)、门控循环单元(Gated Recurrent Unit, GRU)五类神经网络大体的演化过程如下图所示:<br><code>NN -&gt; CNN -&gt; RNN -&gt; LSTM -&gt; GRU</code><br>本文对上述五种类型的神经网络进行简单的介绍：  </p>
+<h3 id="一、卷积神经网络-Convolutional-Neural-Network-CNN"><a href="#一、卷积神经网络-Convolutional-Neural-Network-CNN" class="headerlink" title="一、卷积神经网络(Convolutional Neural Network, CNN)"></a>一、卷积神经网络(Convolutional Neural Network, CNN)</h3><ol>
+<li>一个卷积神经网络由很多层组成，它们的输入是三维的，输出也是三维的，有的层有参数，有的层不需要参数。</li>
+<li>普通神经网络把输入层和隐含层进行“全连接(Full Connected)“的设计。(缺点：训练过程中的计算非常耗时)</li>
+<li><strong>卷积运算的目的是提取输入的不同特征</strong>，第一层卷积层可能只能提取一些低级的特征如边缘、线条和角等层级，更多层的网络能从低级特征中迭代提取更复杂的特征。</li>
+<li>通过下图我们清楚地了解到卷积网络和一般网络<strong>结构上</strong>的差别，也可以理解为<strong>卷积神经网络是立体的</strong>，而<strong>一般的神经网络结构是平面的</strong>。<br><img src="./NN_vs_CNN.jpeg" alt="./NN_vs_CNN.jpeg">  </li>
+<li><strong>卷积层</strong>是CNN中最重要的一部分，也是最为创新的一部分。<br>通过下图中的结构可以清晰地看到卷积网络是怎么实现的:右边是传统的网络结构。左边的图片:首先我们看看图中最左边的结构，为什么是32x32x3的一块立体方块?这个32x32代表的是像素点，也就是图片的大小，这个大小是可以设置的，我们可以设置为50x50，也可以256x256，这都取决于图片的大小。那么3表示什么呢？3其实表示的是RGB的三个通道。<strong>任何一张照片都可以用左边这种图形来表示</strong>。<br>左边图片中间的粉色小方块表示什么呢？这个就是要重点讲的<strong>卷积</strong>。所谓的卷积，就是这种小方块，我们设置一个小方块的大小，但是这个<strong>小方块的厚度必须和左边的这个大方块的厚度是一样的</strong>，大方块每一个像素点由一个0到255的数字表示，这样我们就可以赋予小方块权重，比如我们取小方块的大小是3x3，我们要求厚度必须要和左边的大方块厚度一样，那么小方块的的大小就为3x3x3，我们就可以赋予其3x3x3个权重，然后我们就可以开始计算卷积的结果，将小方块从大方块的左上角开始，一个卷积小方块所覆盖的范围是3x3x3，然后我们将大方块中3x3x3的数字和小方块中的权重分别相乘相加，再加上一个偏置(bias)，就可以得到一个卷积的结果，可以抽象的写成<code>wx+b</code>这种形式，这就是图上所显示的结果，然后我们可以设置小方块的滑动距离，<strong>每次滑动就可以形成一个卷积的计算结果</strong>，<strong>然后将整张大图片滑动覆盖之后就可以形成一层卷积的结果</strong>，我们看到<strong>图中的卷积结果是很厚的，也就是设置了很多层卷积</strong>。总结来说，<strong>每层卷积就是一个卷积核在图片上滑动求值，然后设置多个卷积核就可以形成多层的卷积层</strong>。<br><img src="./CNN_convolutional.jpeg" alt="./CNN_convolutional.jpeg"><br>假设输入数据原来的大小为W*W, Filter的大小是F*F, 步长为S, 卷积操作后的数据的大小为 $\frac{W - F}{S}+1$<br><strong>池化层</strong>:为什么会有池化层的出现呢？是因为不断的做卷积，得到的中间结果会越来越厚，<strong>卷积就相当于提取图片中的特征</strong>，所以卷积层一般会设置得越来越厚，不然你就无法从前面的结果来提取<strong>更多的</strong>特征。这样就会导致中间的结果会越来越大，计算会越来越慢，所以提出了池化层。<br><strong>所谓的池化层，就是将图片的大小缩小的一种处理方式</strong>。通过下图，我们可以看到池化层是怎么处理的:池化层也需要先设置一个窗口，<strong>但是这个小窗口的厚度是1</strong>，而<strong><em>不再是前一层输出的结果的厚度</em></strong>。然后有两种处理方式，一种是取这个小窗口里面所有元素的最大值来代表这个小窗口，一种是取平均值，然后将小窗口滑动，在第二的位置再做同样的处理，<strong>上层网络输出方块</strong>的每一层做完之后就进入这个大方块的下一层做同样的操作，<strong>这个处理办法就可以让整个大方块的大小变小</strong>，可以看看下图的左边。右边是一个简单的一层厚度，取最大值的例子。<br><img src="./pooling.jpeg" alt="./pooling.jpeg">  </li>
+</ol>
+<p><strong>References</strong>  </p>
+<ol>
+<li><a href="http://blog.csdn.net/qq_25762497/article/details/51052861" target="_blank" rel="noopener">详解卷积神经网络(CNN)</a></li>
+<li><a href="https://www.leiphone.com/news/201708/fhJ72ZPlmYr12CwV.html" target="_blank" rel="noopener">小白学CNN以及Keras的速成</a>(这篇不错)</li>
+</ol>
+<h3 id="二、循环神经网络-Recurrent-Neural-Network-RNN"><a href="#二、循环神经网络-Recurrent-Neural-Network-RNN" class="headerlink" title="二、循环神经网络(Recurrent Neural Network, RNN)"></a>二、循环神经网络(Recurrent Neural Network, RNN)</h3><p>recurrent 循环的<br>Recurrent Neural Network(循环神经网络)/Recursive Neural Network(递归神经网络),通常说的RNN指的是循环神经网络</p>
+<ol>
+<li>多层感知器和卷积神经网络是两种典型的前馈网络，这两种结构有一个特点，就是假设输入是一个独立的没有上下文联系的单位，比如输入是一张图片，网络识别是狗还是猫。但是对于一些有明显的上下文特征的序列化输入，比如预测视频中下一帧的播放内容，那么很明显这样的输出必须依赖以前的输入， 也就是说网络必须拥有一定的”记忆能力”。为了赋予网络这样的记忆力，一种特殊结构的神经网络——循环神经网络(Recurrent Neural Network)便应运而生了.  </li>
+<li>RNN 是包含循环的网络，允许信息的持久化。</li>
+</ol>
+<p><strong>References</strong>  </p>
+<ol>
+<li><a href="http://blog.csdn.net/aws3217150/article/details/50768453" target="_blank" rel="noopener">递归神经网络(RNN)简介</a></li>
+<li><a href="https://www.jianshu.com/p/9dc9f41f0b29" target="_blank" rel="noopener">[译] 理解 LSTM 网络</a></li>
+<li><a href="https://www.zhihu.com/question/36824148" target="_blank" rel="noopener">如何有效的区分和理解RNN循环神经网络与递归神经网络？</a></li>
+</ol>
+<h3 id="三、长短期记忆-Long-Short-Term-Memory-LSTM-网络"><a href="#三、长短期记忆-Long-Short-Term-Memory-LSTM-网络" class="headerlink" title="三、长短期记忆(Long Short Term Memory, LSTM)网络"></a>三、长短期记忆(Long Short Term Memory, LSTM)网络</h3><ol>
+<li>LSTM 是一种特别的 RNN，可以学习长期依赖信息，比标准的 RNN 在很多的任务上都表现得更好。几乎所有的令人振奋的关于 RNN 的结果都是通过 LSTM 达到的。</li>
+<li>LSTM 通过刻意的设计来避免长期依赖问题。记住长期的信息在实践中是 LSTM 的默认行为，而非需要付出很大代价才能获得的能力</li>
+<li>LSTM 实现了三个门计算: 遗忘门、输入门和输出门。遗忘门负责决定保留多少上一时刻的单元状态到当前时刻的单元状态；输入门负责决定保留多少当前时刻的输入到当前时刻的单元状态；输出门负责决定当前时刻的单元状态有多少输出。</li>
+<li>RNN不能处理距离较远的序列是因为训练时很有可能会出现<strong>梯度消失</strong></li>
+</ol>
+<p><strong>References</strong>  </p>
+<ol>
+<li><a href="https://www.jianshu.com/p/9dc9f41f0b29" target="_blank" rel="noopener">[译] 理解 LSTM 网络</a></li>
+<li><a href="http://blog.csdn.net/wangyangzhizhou/article/details/76651116" target="_blank" rel="noopener">LSTM神经网络</a></li>
+</ol>
+<h3 id="四、门控循环单元-Gated-Recurrent-Unit-GRU"><a href="#四、门控循环单元-Gated-Recurrent-Unit-GRU" class="headerlink" title="四、门控循环单元(Gated Recurrent Unit, GRU)"></a>四、门控循环单元(Gated Recurrent Unit, GRU)</h3><ol>
+<li>GRU 将忘记门和输入门合成了一个单一的 更新门。GRU保持了LSTM的效果同时又使结构更加简单，所以它也非常流行。GRU模型只有两个门:更新门和重置门。<br>更新门用于控制前一时刻的状态信息被带入到当前状态中的程度，更新门的值越大说明前一时刻的状态信息带入越多。重置门用于控制忽略前一时刻的状态信息的程度，重置门的值越小说明忽略得越多。</li>
+</ol>
+<p><strong>References</strong>  </p>
+<ol>
+<li><a href="https://www.jianshu.com/p/9dc9f41f0b29" target="_blank" rel="noopener">[译] 理解 LSTM 网络</a></li>
+<li><a href="http://blog.csdn.net/wangyangzhizhou/article/details/77332582" target="_blank" rel="noopener">GRU神经网络</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、卷积神经网络-Convolutional-Neural-Network-CNN"><span class="toc-number">1.</span> <span class="toc-text">一、卷积神经网络(Convolutional Neural Network, CNN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、循环神经网络-Recurrent-Neural-Network-RNN"><span class="toc-number">2.</span> <span class="toc-text">二、循环神经网络(Recurrent Neural Network, RNN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、长短期记忆-Long-Short-Term-Memory-LSTM-网络"><span class="toc-number">3.</span> <span class="toc-text">三、长短期记忆(Long Short Term Memory, LSTM)网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、门控循环单元-Gated-Recurrent-Unit-GRU"><span class="toc-number">4.</span> <span class="toc-text">四、门控循环单元(Gated Recurrent Unit, GRU)</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&text=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&is_video=false&description=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=A Byte of NN/CNN/RNN/LSTM/GRU&body=Check out this article: http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&title=A Byte of NN/CNN/RNN/LSTM/GRU"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/01/18/A-Byte-of-NN-CNN-RNN-LSTM-GRU/&name=A Byte of NN/CNN/RNN/LSTM/GRU&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

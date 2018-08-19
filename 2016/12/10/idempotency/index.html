@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="定义数学式的定义f(f(x)) = f(x). 即x被函数f作用一次和作用无限次的结果是一样的. 幂等性应用在软件系统中可以理解为, 某个函数或接口使用相同参数调用一次或者无限次, 其产生的副作用是一样的. 在实际应用中一般针对于接口进行幂等性设计, 例如在系统中, 用户U调用系统的接口I进行扣费操作时, 由于网络不稳定, U重试了多次该请求, 那么无论接口I接收到多少次请求, 都应保证只会扣除该">
+<meta name="keywords" content="Network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="幂等性">
+<meta property="og:url" content="http://xiaoweiliu.cn/2016/12/10/idempotency/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="定义数学式的定义f(f(x)) = f(x). 即x被函数f作用一次和作用无限次的结果是一样的. 幂等性应用在软件系统中可以理解为, 某个函数或接口使用相同参数调用一次或者无限次, 其产生的副作用是一样的. 在实际应用中一般针对于接口进行幂等性设计, 例如在系统中, 用户U调用系统的接口I进行扣费操作时, 由于网络不稳定, U重试了多次该请求, 那么无论接口I接收到多少次请求, 都应保证只会扣除该">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.635Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="幂等性">
+<meta name="twitter:description" content="定义数学式的定义f(f(x)) = f(x). 即x被函数f作用一次和作用无限次的结果是一样的. 幂等性应用在软件系统中可以理解为, 某个函数或接口使用相同参数调用一次或者无限次, 其产生的副作用是一样的. 在实际应用中一般针对于接口进行幂等性设计, 例如在系统中, 用户U调用系统的接口I进行扣费操作时, 由于网络不稳定, U重试了多次该请求, 那么无论接口I接收到多少次请求, 都应保证只会扣除该">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>幂等性</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/01/12/From-cnblogs-to-xiaoweiliu-cn/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/10/10/hello-hexo/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2016/12/10/idempotency/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&text=幂等性"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&is_video=false&description=幂等性"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=幂等性&body=Check out this article: http://xiaoweiliu.cn/2016/12/10/idempotency/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&name=幂等性&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP协议的幂等性"><span class="toc-number">2.</span> <span class="toc-text">TCP协议的幂等性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP的幂等性"><span class="toc-number">3.</span> <span class="toc-text">HTTP的幂等性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reference"><span class="toc-number">4.</span> <span class="toc-text">Reference</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        幂等性
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-12-10T10:18:18.000Z" itemprop="datePublished">2016-12-10</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Network/">Network</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>数学式的定义<code>f(f(x)) = f(x)</code>. 即x被函数f作用一次和作用无限次的结果是一样的. 幂等性应用在软件系统中可以理解为, 某个函数或接口使用相同参数调用一次或者无限次, 其产生的副作用是一样的. 在实际应用中一般针对于接口进行幂等性设计, 例如在系统中, 用户U调用系统的接口I进行扣费操作时, 由于网络不稳定, U重试了多次该请求, 那么无论接口I接收到多少次请求, 都应保证只会扣除该用户一次费用.</p>
+<h3 id="TCP协议的幂等性"><a href="#TCP协议的幂等性" class="headerlink" title="TCP协议的幂等性"></a>TCP协议的幂等性</h3><p>幂等性一般应用于协议设计, TCP协议支持幂等性. 在网络不稳定时, 操作系统可以肆无忌惮的重发TCP报文片段. TCP协议能够保证幂等性的关键在于<a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="_blank" rel="noopener"><code>Sequence number</code></a>字段, 序列号的在较长时间内不会出现重复的情况. 对于应用层的协议设计, 原理与TCP协议类似, 我们需要一个不重复的序列号. 更广泛地说, 在一个业务流程的处理中, 我们需要一个不重复的业务流水号, 以保证幂等性.</p>
+<h3 id="HTTP的幂等性"><a href="#HTTP的幂等性" class="headerlink" title="HTTP的幂等性"></a>HTTP的幂等性</h3><p>GET, DELETE, PUT是满足幂等性的, POST是不满足幂等性的<br>POST和PUT的区别: POST和PUT都可以用于创建资源, 多次POST会创建多个资源, 但多次PUT不会创建多个资源, 只会创建一个资源, 后面的PUT请求视为对所创建资源的更新操作.</p>
+<p>常用的HTTP动词有下面五个（括号里是对应的SQL命令）:<br>GET（SELECT）：从服务器取出资源（一项或多项）<br>POST（CREATE）：在服务器新建一个资源（也可以用于更新资源）<br>PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）<br>PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）<br>DELETE（DELETE）：从服务器删除资源<br>还有两个不常用的HTTP动词:<br>HEAD：获取资源的元数据<br>OPTIONS：获取信息，关于资源的哪些属性是客户端可以改变的</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.cnblogs.com/weidagang2046/archive/2011/06/04/2063696.html" target="_blank" rel="noopener">理解HTTP幂等性</a><br><a href="http://blog.csdn.net/tjgamejx2/article/details/51011425" target="_blank" rel="noopener">基础篇(一) 幂等性</a><br><a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a></p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP协议的幂等性"><span class="toc-number">2.</span> <span class="toc-text">TCP协议的幂等性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP的幂等性"><span class="toc-number">3.</span> <span class="toc-text">HTTP的幂等性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reference"><span class="toc-number">4.</span> <span class="toc-text">Reference</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2016/12/10/idempotency/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&text=幂等性"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&is_video=false&description=幂等性"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=幂等性&body=Check out this article: http://xiaoweiliu.cn/2016/12/10/idempotency/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&title=幂等性"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2016/12/10/idempotency/&name=幂等性&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

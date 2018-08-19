@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="最近在工作中使用IPC(Inter-Process Communication), 发现直接使用全局变量在多个进程间通信是不可行的，代码如下:12345678910111213141516171819202122232425# 0. 使用全局变量在多个进程间通信(不可行)global_val = [27017]def func0(value):    global global_val    gl">
+<meta name="keywords" content="Python,multiprocessing,IPC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPC in Python(multiprocessing)">
+<meta property="og:url" content="http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="最近在工作中使用IPC(Inter-Process Communication), 发现直接使用全局变量在多个进程间通信是不可行的，代码如下:12345678910111213141516171819202122232425# 0. 使用全局变量在多个进程间通信(不可行)global_val = [27017]def func0(value):    global global_val    gl">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.627Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IPC in Python(multiprocessing)">
+<meta name="twitter:description" content="最近在工作中使用IPC(Inter-Process Communication), 发现直接使用全局变量在多个进程间通信是不可行的，代码如下:12345678910111213141516171819202122232425# 0. 使用全局变量在多个进程间通信(不可行)global_val = [27017]def func0(value):    global global_val    gl">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>IPC in Python(multiprocessing)</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/03/20/Basic-Mathematics-for-Machine-Learning/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/01/27/Learning-Notes-on-numpy/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&text=IPC in Python(multiprocessing)"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&is_video=false&description=IPC in Python(multiprocessing)"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=IPC in Python(multiprocessing)&body=Check out this article: http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&name=IPC in Python(multiprocessing)&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-进程间共享数值型数据"><span class="toc-number">1.</span> <span class="toc-text">1. 进程间共享数值型数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-进程间共享数组型数据"><span class="toc-number">2.</span> <span class="toc-text">2. 进程间共享数组型数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-进程间共享dict-list数据"><span class="toc-number">3.</span> <span class="toc-text">3. 进程间共享dict,list数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References"><span class="toc-number">4.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        IPC in Python(multiprocessing)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-02-13T11:16:11.000Z" itemprop="datePublished">2018-02-13</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/IPC/">IPC</a>, <a class="tag-link" href="/tags/Python/">Python</a>, <a class="tag-link" href="/tags/multiprocessing/">multiprocessing</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>最近在工作中使用IPC(Inter-Process Communication), 发现直接使用全局变量在多个进程间通信是不可行的，代码如下:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 0. 使用全局变量在多个进程间通信(不可行)</span></span><br><span class="line">global_val = [<span class="number">27017</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func0</span><span class="params">(value)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> global_val</span><br><span class="line">    global_val.append(value)</span><br><span class="line">    print(<span class="string">"[func0()]pid:"</span>, os.getpid(), <span class="string">", global_val:"</span>, global_val, <span class="string">", id(global_val):"</span>, id(global_val))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">global_var_IPC</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    直接使用全局变量在多个进程间通信是不可行的</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">global</span> global_val</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", global_val:"</span>, global_val, <span class="string">", id(global_val):"</span>, id(global_val))</span><br><span class="line">    processes = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">        process = multiprocessing.Process(target=func0, args=(i, ))</span><br><span class="line">        process.start()</span><br><span class="line">        processes.append(process)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> process <span class="keyword">in</span> processes:</span><br><span class="line">        process.join()</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", global_val:"</span>, global_val, <span class="string">", id(global_val):"</span>, id(global_val))</span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[main]pid: 2319 , global_val: [27017] , id(global_val): 140655214689160</span><br><span class="line">[func()]pid: 2320 , global_val: [27017, 0] , id(global_val): 140655214689160</span><br><span class="line">[func()]pid: 2321 , global_val: [27017, 1] , id(global_val): 140655214689160</span><br><span class="line">[func()]pid: 2322 , global_val: [27017, 2] , id(global_val): 140655214689160</span><br><span class="line">[func()]pid: 2323 , global_val: [27017, 3] , id(global_val): 140655214689160</span><br><span class="line">[func()]pid: 2324 , global_val: [27017, 4] , id(global_val): 140655214689160</span><br><span class="line">[main]pid: 2319 , global_val: [27017] , id(global_val): 140655214689160</span><br></pre></td></tr></table></figure></p>
+<h2 id="1-进程间共享数值型数据"><a href="#1-进程间共享数值型数据" class="headerlink" title="1. 进程间共享数值型数据"></a>1. 进程间共享数值型数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 进程间共享数值型数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func1</span><span class="params">(obj)</span>:</span></span><br><span class="line">    <span class="comment"># 子进程修改数值的值, 主进程跟着改变</span></span><br><span class="line">    print(<span class="string">"[func1]pid:"</span>, os.getpid(), <span class="string">", obj.value:"</span>, obj.value, <span class="string">", id(obj.value):"</span>, id(obj.value))</span><br><span class="line">    obj.value = <span class="number">10.78</span></span><br><span class="line">    print(<span class="string">"[func1]pid:"</span>, os.getpid(), <span class="string">", obj.value:"</span>, obj.value, <span class="string">", id(obj.value):"</span>, id(obj.value))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">num_IPC</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># d表示ctypes.c_double, 主进程与子进程共享这个value.</span></span><br><span class="line">    <span class="comment"># multi_v = multiprocessing.Value("d", 10)</span></span><br><span class="line">    multi_v = multiprocessing.Value(<span class="string">"d"</span>, <span class="number">10</span>)</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    typecode_to_type = &#123;</span></span><br><span class="line"><span class="string">        'c': ctypes.c_char,  'u': ctypes.c_wchar,</span></span><br><span class="line"><span class="string">        'b': ctypes.c_byte,  'B': ctypes.c_ubyte,</span></span><br><span class="line"><span class="string">        'h': ctypes.c_short, 'H': ctypes.c_ushort,</span></span><br><span class="line"><span class="string">        'i': ctypes.c_int,   'I': ctypes.c_uint,</span></span><br><span class="line"><span class="string">        'l': ctypes.c_long,  'L': ctypes.c_ulong,</span></span><br><span class="line"><span class="string">        'f': ctypes.c_float, 'd': ctypes.c_double</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", multi_v.value:"</span>, multi_v.value, <span class="string">", id(multi_v.value):"</span>, id(multi_v.value))</span><br><span class="line"></span><br><span class="line">    p = multiprocessing.Process(target=func1, args=(multi_v, ))</span><br><span class="line">    p.start()</span><br><span class="line">    p.join()</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", multi_v.value:"</span>, multi_v.value, <span class="string">", id(multi_v.value):"</span>, id(multi_v.value))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyObj</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, val)</span>:</span></span><br><span class="line">        self.value = val</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">num_IPC_1</span><span class="params">()</span>:</span></span><br><span class="line">    myobj = MyObj(<span class="number">10</span>)</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", myobj.value:"</span>, myobj.value, <span class="string">", id(myobj.value):"</span>, id(myobj.value))</span><br><span class="line"></span><br><span class="line">    p = multiprocessing.Process(target=func1, args=(myobj, ))</span><br><span class="line">    p.start()</span><br><span class="line">    p.join()</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", myobj.value:"</span>, myobj.value, <span class="string">", id(myobj.value):"</span>, id(myobj.value))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">num_IPC()</span><br><span class="line">print(<span class="string">"--"</span> * <span class="number">30</span>)</span><br><span class="line">num_IPC_1()</span><br></pre></td></tr></table></figure>
+<p>输出结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[main]pid: 2880 , multi_v.value: 10.0 , id(multi_v.value): 139652794868672</span><br><span class="line">[func2]pid: 2881 , obj.value: 10.0 , id(obj.value): 139652794869008</span><br><span class="line">[func2]pid: 2881 , obj.value: 10.78 , id(obj.value): 139652794869008</span><br><span class="line">[main]pid: 2880 , multi_v.value: 10.78 , id(multi_v.value): 139652794869008</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">[main]pid: 2880 , myobj.value: 10 , id(myobj.value): 9469696</span><br><span class="line">[func2]pid: 2882 , obj.value: 10 , id(obj.value): 9469696</span><br><span class="line">[func2]pid: 2882 , obj.value: 10.78 , id(obj.value): 139652794867832</span><br><span class="line">[main]pid: 2880 , myobj.value: 10 , id(myobj.value): 9469696</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-进程间共享数组型数据"><a href="#2-进程间共享数组型数据" class="headerlink" title="2. 进程间共享数组型数据"></a>2. 进程间共享数组型数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2. 进程间共享数组型数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func2</span><span class="params">(array)</span>:</span></span><br><span class="line">    print(<span class="string">"[func2]pid:"</span>, os.getpid(), <span class="string">", array:"</span>, array[:], <span class="string">", id(array):"</span>, id(array))</span><br><span class="line">    array[<span class="number">2</span>] = <span class="number">-110</span>    <span class="comment"># 子进程改变数组, 主进程跟着改变</span></span><br><span class="line">    print(<span class="string">"[func2]pid:"</span>, os.getpid(), <span class="string">", array:"</span>, array[:], <span class="string">", id(array):"</span>, id(array))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">array_IPC</span><span class="params">()</span>:</span></span><br><span class="line">    array = multiprocessing.Array(<span class="string">"i"</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", array:"</span>, array[:], <span class="string">", id(array):"</span>, id(array))</span><br><span class="line"></span><br><span class="line">    p = multiprocessing.Process(target=func2, args=(array, )), </span><br><span class="line">    p.start()</span><br><span class="line">    p.join()</span><br><span class="line">    print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", array:"</span>, array[:], <span class="string">", id(array):"</span>, id(array))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">array_IPC()</span><br></pre></td></tr></table></figure>
+<p>输出结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[main]pid: 8965 , array: [1, 2, 3, 4, 5, 6] , id(array): 140127608142648</span><br><span class="line">[func2]pid: 8966 , array: [1, 2, 3, 4, 5, 6] , id(array): 140127608142648</span><br><span class="line">[func2]pid: 8966 , array: [1, 2, -110, 4, 5, 6] , id(array): 140127608142648</span><br><span class="line">[main]pid: 8965 , array: [1, 2, -110, 4, 5, 6] , id(array): 140127608142648</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-进程间共享dict-list数据"><a href="#3-进程间共享dict-list数据" class="headerlink" title="3. 进程间共享dict,list数据"></a>3. 进程间共享dict,list数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3. 进程间共享dict,list数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func3</span><span class="params">(mydic, mylist)</span>:</span></span><br><span class="line">    print(<span class="string">"[func3]pid:"</span>, os.getpid(), <span class="string">", mydic:"</span>, mydic, <span class="string">", id(mydic):"</span>, id(mydic))</span><br><span class="line">    print(<span class="string">"[func3]pid:"</span>, os.getpid(), <span class="string">", mylist:"</span>, mylist, <span class="string">", id(mylist):"</span>, id(mylist))</span><br><span class="line">    mydic[<span class="string">"index1"</span>] = <span class="string">"value1"</span>    <span class="comment"># 子进程改变dict, 主进程跟着改变</span></span><br><span class="line">    mydic[<span class="string">"index2"</span>] = <span class="string">"value2"</span></span><br><span class="line">    mylist.append(<span class="number">111</span>)    <span class="comment"># 子进程改变list, 主进程跟着改变</span></span><br><span class="line">    mylist.append(<span class="number">222</span>)</span><br><span class="line">    mylist.append(<span class="number">333</span>)</span><br><span class="line">    print(<span class="string">"[func3]pid:"</span>, os.getpid(), <span class="string">", mydic:"</span>, mydic, <span class="string">", id(mydic):"</span>, id(mydic))</span><br><span class="line">    print(<span class="string">"[func3]pid:"</span>, os.getpid(), <span class="string">", mylist:"</span>, mylist, <span class="string">", id(mylist):"</span>, id(mylist))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dict_list_IPC</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">with</span> multiprocessing.Manager() <span class="keyword">as</span> mg:</span><br><span class="line">        mydic = multiprocessing.Manager().dict()</span><br><span class="line">        mylist = multiprocessing.Manager().list(range(<span class="number">5</span>))</span><br><span class="line">        print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", mydic:"</span>, mydic, <span class="string">", id(mydic):"</span>, id(mydic))</span><br><span class="line">        print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", mylist:"</span>, mylist, <span class="string">", id(mylist):"</span>, id(mylist))</span><br><span class="line"></span><br><span class="line">        p = multiprocessing.Process(target=func3, args=(mydic, mylist))</span><br><span class="line">        p.start()</span><br><span class="line">        p.join()</span><br><span class="line"></span><br><span class="line">        print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", mydic:"</span>, mydic, <span class="string">", id(mydic):"</span>, id(mydic))</span><br><span class="line">        print(<span class="string">"[main]pid:"</span>, os.getpid(), <span class="string">", mylist:"</span>, mylist, <span class="string">", id(mylist):"</span>, id(mylist))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dict_list_IPC()</span><br></pre></td></tr></table></figure>
+<p>输出结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[main]pid: 14180 , mydic: &#123;&#125; , id(mydic): 140480908666808</span><br><span class="line">[main]pid: 14180 , mylist: [0, 1, 2, 3, 4] , id(mylist): 140480908701768</span><br><span class="line">[func3]pid: 14196 , mydic: &#123;&#125; , id(mydic): 140480908666808</span><br><span class="line">[func3]pid: 14196 , mylist: [0, 1, 2, 3, 4] , id(mylist): 140480908701768</span><br><span class="line">[func3]pid: 14196 , mydic: &#123;&apos;index1&apos;: &apos;value1&apos;, &apos;index2&apos;: &apos;value2&apos;&#125; , id(mydic): 140480908666808</span><br><span class="line">[func3]pid: 14196 , mylist: [0, 1, 2, 3, 4, 111, 222, 333] , id(mylist): 140480908701768</span><br><span class="line">[main]pid: 14180 , mydic: &#123;&apos;index1&apos;: &apos;value1&apos;, &apos;index2&apos;: &apos;value2&apos;&#125; , id(mydic): 140480908666808</span><br><span class="line">[main]pid: 14180 , mylist: [0, 1, 2, 3, 4, 111, 222, 333] , id(mylist): 140480908701768</span><br></pre></td></tr></table></figure></p>
+<p>多线程间的通信可以使用全局变量(global), 并在必要时使用锁.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a href="https://blog.csdn.net/houyanhua1/article/details/78244288" target="_blank" rel="noopener">Python 进程之间共享数据(全局变量)</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-进程间共享数值型数据"><span class="toc-number">1.</span> <span class="toc-text">1. 进程间共享数值型数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-进程间共享数组型数据"><span class="toc-number">2.</span> <span class="toc-text">2. 进程间共享数组型数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-进程间共享dict-list数据"><span class="toc-number">3.</span> <span class="toc-text">3. 进程间共享dict,list数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References"><span class="toc-number">4.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&text=IPC in Python(multiprocessing)"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&is_video=false&description=IPC in Python(multiprocessing)"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=IPC in Python(multiprocessing)&body=Check out this article: http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&title=IPC in Python(multiprocessing)"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/02/13/IPC-in-Python-multiprocessing/&name=IPC in Python(multiprocessing)&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

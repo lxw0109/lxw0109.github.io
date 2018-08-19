@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Spark提供了一系列的操作RDD中的数据:  创建操作(Creation Operation): RDD由SparkContext通过内存数据或外部文件系统创建 转换操作(Transformation Operation): 将RDD通过转换操作变为另一个RDD，转换操作是lazy的(惰性), 这期间不会产生任何数据的计算. Spark提供了distinct、filter、map、flatMap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning Notes on Spark">
+<meta property="og:url" content="http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="Spark提供了一系列的操作RDD中的数据:  创建操作(Creation Operation): RDD由SparkContext通过内存数据或外部文件系统创建 转换操作(Transformation Operation): 将RDD通过转换操作变为另一个RDD，转换操作是lazy的(惰性), 这期间不会产生任何数据的计算. Spark提供了distinct、filter、map、flatMap">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/terminology.png">
+<meta property="og:updated_time" content="2018-08-19T08:23:44.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Learning Notes on Spark">
+<meta name="twitter:description" content="Spark提供了一系列的操作RDD中的数据:  创建操作(Creation Operation): RDD由SparkContext通过内存数据或外部文件系统创建 转换操作(Transformation Operation): 将RDD通过转换操作变为另一个RDD，转换操作是lazy的(惰性), 这期间不会产生任何数据的计算. Spark提供了distinct、filter、map、flatMap">
+<meta name="twitter:image" content="http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/terminology.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>Learning Notes on Spark</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2018/07/03/常用机器学习算法激活函数和损失函数的总结/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&text=Learning Notes on Spark"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&is_video=false&description=Learning Notes on Spark"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Learning Notes on Spark&body=Check out this article: http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&name=Learning Notes on Spark&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Learning Notes on Spark
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-08-19T08:17:57.000Z" itemprop="datePublished">2018-08-19</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Spark提供了一系列的操作RDD中的数据:</p>
+<ol>
+<li>创建操作(Creation Operation): RDD由SparkContext通过内存数据或外部文件系统创建</li>
+<li>转换操作(Transformation Operation): 将RDD通过转换操作变为另一个RDD，转换操作是lazy的(惰性), 这期间不会产生任何数据的计算. Spark提供了<strong>distinct、filter、map、flatMap、union、groupByKey等一系列的转换操作函数</strong></li>
+<li>控制操作(Control Operation): 将RDD持久化到内存或硬盘当中，如cache将filterRDD缓存到内存</li>
+<li>行动操作:(Action Operation): Spark采用了惰性计算，每一个<strong>行动操作</strong>都会触发Spark Job进行计算并返回最终的结果。行动操作有这么几类:<ul>
+<li>返回标量，count返回元素的个数</li>
+<li>返回Scala集合，task(n)返回0到n-1组成的集合</li>
+<li>写入外部存储，saveAsHadoopFile(path)存储到HDFS<br>Spark提供了<strong>count、top、task、saveAsHadoopFile等行动操作函数</strong></li>
+</ul>
+</li>
+</ol>
+<p>在Spark中存在转换操作(Transformation Operation)与 行动操作(Action Operation)两种；而转换操作只是会从一个RDD中生成另一个RDD且是lazy的，Spark中只有行动操作(Action Operation)才会触发作业的提交，从而引发作业调度；在一个计算任务中可能会多次调用 转换操作这些操作生成的RDD可能存在着依赖关系，而由于转换都是lazy所以当行动操作(Action Operation )触发时才会有真正的RDD生成，这一系列的RDD中就存在着依赖关系形成一个DAG(Directed Acyclc Graph)，在Spark中DAGScheuler是基于DAG的顶层调度模块。</p>
+<p>Application:使用Spark编写的应用程序，通常需要提交一个或多个作业<br>Job:在触发RDD Action操作时产生的计算作业<br>Task:一个分区数据集中最小处理单元也就是真正执行作业的地方<br>TaskSet:由多个Task所组成没有Shuffle依赖关系的任务集<br>Stage:一个任务集对应的调度阶段，每个Job会被拆分成诺干个Stage<br><img src="./terminology.png" alt=""></p>
+<p>Spark中最核心的概念为RDD(Resilient Distributed DataSets)中文为:弹性分布式数据集，RDD为对分布式内存对象的 抽象它表示一个被分区不可变且能并行操作的数据集；RDD为可序列化的、可缓存到内存对RDD进行操作过后还可以存到内存中，下次操作直接把内存中RDD作为输入，避免了Hadoop MapReduce的大IO操作。<br>RDD为不可变的数据集，可以使用转换操作”修改”一个RDD，但这操作过后返回的是一个全新的RDD，原本RDD并没有改变  </p>
+<p>Spark所要处理的任何数据都是存储在RDD之中，目前两种方式可以生成一个RDD:</p>
+<ul>
+<li>从RDD进行转换操作</li>
+<li>使用外部存储系统创建，如:HDFS</li>
+</ul>
+<p>Spark RDD只支持粗粒度的操作，对一个RDD的操作都会被作用于该RDD的所有数据；为了保证RDD的高可用性RDD通过使用Lineage(血统)记录了RDD演变流程(从其他RDD到当前RDD所做的操作)。当RDD分区数据丢失时可以通过Lineage的信息重新计算与恢复分区数据，或进行RDD的重建。</p>
+<p>References:<br>1.<a href="https://blog.csdn.net/lbyyy/article/details/53334019" target="_blank" rel="noopener">Spark入门基础教程</a> 错别字和不通的句子比较多，不推荐阅读<br>2.<a href="http://spark.apache.org/docs/latest/" target="_blank" rel="noopener">Spark Overview</a></p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&text=Learning Notes on Spark"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&is_video=false&description=Learning Notes on Spark"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Learning Notes on Spark&body=Check out this article: http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&title=Learning Notes on Spark"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/&name=Learning Notes on Spark&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

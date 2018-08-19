@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已  1.数据预处理无量纲化使不同规格的数据转换到同一规格。常见的无量纲化方法有标准化和区间缩放法。标准化的前提是特征值服从正态分布，标准化后，其转换成标准正态分布。区间缩放法利用了边界值信息，将特征的取值区间缩放到某个特定的范围，例如[0, 1]等。标准化 vs 归一化的区别(程序验证和示例请参见Github代码):    标准化是">
+<meta name="keywords" content="Machine Learning,Feature Engineering">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A byte of Feature Engineering">
+<meta property="og:url" content="http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已  1.数据预处理无量纲化使不同规格的数据转换到同一规格。常见的无量纲化方法有标准化和区间缩放法。标准化的前提是特征值服从正态分布，标准化后，其转换成标准正态分布。区间缩放法利用了边界值信息，将特征的取值区间缩放到某个特定的范围，例如[0, 1]等。标准化 vs 归一化的区别(程序验证和示例请参见Github代码):    标准化是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="A byte of Feature Engineering">
+<meta name="twitter:description" content="数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已  1.数据预处理无量纲化使不同规格的数据转换到同一规格。常见的无量纲化方法有标准化和区间缩放法。标准化的前提是特征值服从正态分布，标准化后，其转换成标准正态分布。区间缩放法利用了边界值信息，将特征的取值区间缩放到某个特定的范围，例如[0, 1]等。标准化 vs 归一化的区别(程序验证和示例请参见Github代码):    标准化是">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>A byte of Feature Engineering</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/06/03/Learning-Notes-on-Sentiment-Analysis/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/04/17/GIL-in-Python-CPython/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&text=A byte of Feature Engineering"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&is_video=false&description=A byte of Feature Engineering"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=A byte of Feature Engineering&body=Check out this article: http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&name=A byte of Feature Engineering&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-数据预处理"><span class="toc-number">1.</span> <span class="toc-text">1.数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-特征选择"><span class="toc-number">2.</span> <span class="toc-text">2.特征选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Filter"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Wrapper"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Wrapper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Embedded"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 Embedded</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-降维"><span class="toc-number">3.</span> <span class="toc-text">3.降维</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References"><span class="toc-number">4.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        A byte of Feature Engineering
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-05-28T00:40:49.000Z" itemprop="datePublished">2018-05-28</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Feature-Engineering/">Feature Engineering</a>, <a class="tag-link" href="/tags/Machine-Learning/">Machine Learning</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <blockquote>
+<p>数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已</p>
+</blockquote>
+<h2 id="1-数据预处理"><a href="#1-数据预处理" class="headerlink" title="1.数据预处理"></a>1.数据预处理</h2><p>无量纲化使不同规格的数据转换到同一规格。常见的无量纲化方法有<strong>标准化</strong>和<strong>区间缩放法</strong>。<strong>标准化的前提是特征值服从正态分布</strong>，标准化后，其转换成标准正态分布。区间缩放法利用了边界值信息，将特征的取值区间缩放到某个特定的范围，例如[0, 1]等。<br><strong>标准化 vs 归一化的区别</strong>(程序验证和示例请参见<a href="https://github.com/lxw0109/ML-Experiments/blob/master/preprocessing_method/src/feature_engineering_sklearn.py" target="_blank" rel="noopener">Github代码</a>):  </p>
+<ul>
+<li>标准化是依照特征矩阵的<strong>列</strong>处理数据，其通过求z-score的方法，将样本的特征值转换到同一量纲下</li>
+<li>归一化是依照特征矩阵的<strong>行</strong>处理数据，其目的在于样本向量在点乘运算或其他核函数计算相似性时，拥有统一的标准，也就是都转化为”单位向量”, 例如使用l2范数进行归一化.</li>
+</ul>
+<p><strong>总结如下:</strong>  </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>StandardScaler</td>
+<td>无量纲化</td>
+<td>标准化，<strong>基于特征矩阵的列</strong>，将特征值转换至服从标准正态分布</td>
+</tr>
+<tr>
+<td>MinMaxScaler</td>
+<td>无量纲化</td>
+<td>区间缩放，基于最大最小值，将特征值转换到[0, 1]区间上</td>
+</tr>
+<tr>
+<td>Normalizer</td>
+<td>归一化</td>
+<td><strong>基于特征矩阵的行</strong>，将样本向量转换为“单位向量”</td>
+</tr>
+<tr>
+<td>Binarizer</td>
+<td>二值化</td>
+<td>基于给定阈值，将定量特征按阈值划分</td>
+</tr>
+<tr>
+<td>OneHotEncoder</td>
+<td>哑编码</td>
+<td>将定性数据编码为定量数据</td>
+</tr>
+<tr>
+<td>Imputer</td>
+<td>缺失值计算</td>
+<td>计算缺失值，缺失值可填充为均值等</td>
+</tr>
+<tr>
+<td>PolynomialFeatures</td>
+<td>多项式数据转换</td>
+<td>多项式数据转换</td>
+</tr>
+<tr>
+<td>FunctionTransformer</td>
+<td>自定义单元数据转换</td>
+<td>使用单变元的函数来转换数据</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="2-特征选择"><a href="#2-特征选择" class="headerlink" title="2.特征选择"></a>2.特征选择</h2><p>通常从两个方面考虑选择特征:</p>
+<ul>
+<li>特征是否发散<br>如果一个特征不发散，如方差接近于0，也就是说样本在这个特征上基本没有差异，这个特征对于样本的区分并没有什么用</li>
+<li>特征与目标的相关性<br>这点比较显然，与目标相关性高的特征，应当优先选择</li>
+</ul>
+<p>根据特征选择的形式又可以将特征选择方法分为3种:  </p>
+<ul>
+<li>Filter: 过滤法，按照发散性或者相关性对各个特征进行评分，设定阈值或者待选择阈值的个数，选择特征</li>
+<li>Wrapper: 包装法，根据目标函数(通常是预测效果评分)，每次选择若干特征，或者排除若干特征</li>
+<li>Embedded: 嵌入法，先使用某些机器学习的算法和模型进行训练，得到各个特征的权值系数，根据系数从大到小选择特征。类似于Filter方法，但是是通过训练来确定特征的优劣。</li>
+</ul>
+<h3 id="2-1-Filter"><a href="#2-1-Filter" class="headerlink" title="2.1 Filter"></a>2.1 Filter</h3><ul>
+<li>方差选择法</li>
+<li>相关系数法</li>
+<li>卡方检验<br>经典的卡方检验是检验<strong>定性自变量</strong>对<strong>定性因变量</strong>的相关性。假设自变量有N种取值，因变量有M种取值，考虑自变量等于i且因变量等于j的样本频数的观察值与期望的差距，构建统计量：<script type="math/tex; mode=display">
+\chi^2=\sum\frac{(A-E)^2}{E}</script>这个统计量的含义简而言之就是自变量对因变量的相关性。</li>
+<li>互信息法(衡量两个随机变量的相关性)</li>
+</ul>
+<h3 id="2-2-Wrapper"><a href="#2-2-Wrapper" class="headerlink" title="2.2 Wrapper"></a>2.2 Wrapper</h3><ul>
+<li>递归特征消除法<br>递归消除特征法使用一个基模型来进行多轮训练，每轮训练后，消除若干权值系数的特征，再基于新的特征集进行下一轮训练</li>
+</ul>
+<h3 id="2-3-Embedded"><a href="#2-3-Embedded" class="headerlink" title="2.3 Embedded"></a>2.3 Embedded</h3><ul>
+<li>基于惩罚项的特征选择法<br>使用带惩罚项的基模型，除了筛选出特征外，同时也进行了<strong>降维</strong><br>L1惩罚项降维的原理在于<strong>保留多个对目标值具有同等相关性的特征中的一个，所以没选到的特征不代表不重要</strong></li>
+<li>基于树模型的特征选择法<br>树模型中GBDT也可用来作为基模型进行特征选择</li>
+</ul>
+<p><strong>总结如下:</strong>  </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>所属方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VarianceThreshold</td>
+<td>Filter</td>
+<td>方差选择法</td>
+</tr>
+<tr>
+<td>SelectKBest</td>
+<td>Filter</td>
+<td>可选关联系数、卡方校验、最大信息系数作为得分计算的方法</td>
+</tr>
+<tr>
+<td>RFE</td>
+<td>Wrapper</td>
+<td>递归地训练基模型，将权值系数较小的特征从特征集合中消除</td>
+</tr>
+<tr>
+<td>SelectFromModel</td>
+<td>Embedded</td>
+<td>训练基模型，选择权值系数较高的特征</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="3-降维"><a href="#3-降维" class="headerlink" title="3.降维"></a>3.降维</h2><p>当特征选择完成后，可以直接训练模型了，但是可能由于特征矩阵过大，导致计算量大，训练时间长的问题，因此降低特征矩阵维度也是必不可少的。<strong>常见的降维方法</strong>除了以上提到的<strong>基于L1惩罚项的模型</strong>以外，另外还有<strong>主成分分析法(PCA)</strong>和<strong>线性判别分析(LDA)</strong>，线性判别分析本身也是一个分类模型。<br>PCA和LDA有很多的相似点，其<strong>本质是要将原始的样本映射到维度更低的样本空间中</strong>，但是PCA和LDA的映射目标不一样：<strong>PCA是为了让映射后的样本具有最大的发散性</strong>；而<strong>LDA是为了让映射后的样本有最好的分类性能</strong>。所以说<strong>PCA</strong>是一种<strong>无监督</strong>的降维方法，而<strong>LDA</strong>是一种<strong>有监督</strong>的降维方法。</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a href="http://www.cnblogs.com/jasonfreak/p/5448385.html" target="_blank" rel="noopener">使用sklearn做单机特征工程</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-数据预处理"><span class="toc-number">1.</span> <span class="toc-text">1.数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-特征选择"><span class="toc-number">2.</span> <span class="toc-text">2.特征选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Filter"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Wrapper"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Wrapper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Embedded"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 Embedded</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-降维"><span class="toc-number">3.</span> <span class="toc-text">3.降维</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References"><span class="toc-number">4.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&text=A byte of Feature Engineering"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&is_video=false&description=A byte of Feature Engineering"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=A byte of Feature Engineering&body=Check out this article: http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&title=A byte of Feature Engineering"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/05/28/A-byte-of-Feature-Engineering/&name=A byte of Feature Engineering&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

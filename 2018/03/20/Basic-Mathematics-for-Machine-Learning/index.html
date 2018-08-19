@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="本科学习的所有数学知识都还给数学老师了，所以在此对用到的数学基础知识进行复习和总结。 1. 导数(Derivative) 一个函数不一定在所有的点上都有导数 可导的函数一定连续；不连续的函数一定不可导 原函数与反函数导数关系：y=f(x)的反函数是x=g(y)，则有y’=1/x’ 复合函数的导数：复合函数对自变量的导数，等于已知函数对中间变量的导数，乘以中间变量对自变量的导数(称为链式法则) 链式">
+<meta name="keywords" content="Mathematics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Basic Mathematics for Machine Learning">
+<meta property="og:url" content="http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="本科学习的所有数学知识都还给数学老师了，所以在此对用到的数学基础知识进行复习和总结。 1. 导数(Derivative) 一个函数不一定在所有的点上都有导数 可导的函数一定连续；不连续的函数一定不可导 原函数与反函数导数关系：y=f(x)的反函数是x=g(y)，则有y’=1/x’ 复合函数的导数：复合函数对自变量的导数，等于已知函数对中间变量的导数，乘以中间变量对自变量的导数(称为链式法则) 链式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/chain_rule.png">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/norm.png">
+<meta property="og:image" content="http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/norm2.png">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.620Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Basic Mathematics for Machine Learning">
+<meta name="twitter:description" content="本科学习的所有数学知识都还给数学老师了，所以在此对用到的数学基础知识进行复习和总结。 1. 导数(Derivative) 一个函数不一定在所有的点上都有导数 可导的函数一定连续；不连续的函数一定不可导 原函数与反函数导数关系：y=f(x)的反函数是x=g(y)，则有y’=1/x’ 复合函数的导数：复合函数对自变量的导数，等于已知函数对中间变量的导数，乘以中间变量对自变量的导数(称为链式法则) 链式">
+<meta name="twitter:image" content="http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/chain_rule.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>Basic Mathematics for Machine Learning</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/03/20/梯度消失与梯度爆炸/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/02/13/IPC-in-Python-multiprocessing/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&text=Basic Mathematics for Machine Learning"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&is_video=false&description=Basic Mathematics for Machine Learning"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Basic Mathematics for Machine Learning&body=Check out this article: http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&name=Basic Mathematics for Machine Learning&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-导数-Derivative"><span class="toc-number">1.</span> <span class="toc-text">1. 导数(Derivative)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-偏导数-Partial-Derivative"><span class="toc-number">2.</span> <span class="toc-text">2. 偏导数(Partial Derivative)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-数学期望"><span class="toc-number">3.</span> <span class="toc-text">3. 数学期望</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-先验概率、后验概率"><span class="toc-number">4.</span> <span class="toc-text">4. 先验概率、后验概率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-极大似然估计"><span class="toc-number">5.</span> <span class="toc-text">5. 极大似然估计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-矩阵的秩"><span class="toc-number">6.</span> <span class="toc-text">6. 矩阵的秩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-范数"><span class="toc-number">7.</span> <span class="toc-text">7. 范数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Taylor公式"><span class="toc-number">8.</span> <span class="toc-text">8. Taylor公式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-高阶无穷小"><span class="toc-number">9.</span> <span class="toc-text">9. 高阶无穷小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-取模和取余"><span class="toc-number">10.</span> <span class="toc-text">10. 取模和取余</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-卡方分布-chi-square-distribution"><span class="toc-number">11.</span> <span class="toc-text">11. 卡方分布(chi-square distribution)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-协方差-Covariance"><span class="toc-number">12.</span> <span class="toc-text">12. 协方差(Covariance)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-中心极限定理"><span class="toc-number">13.</span> <span class="toc-text">13. 中心极限定理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-两个重要极限公式"><span class="toc-number">14.</span> <span class="toc-text">14. 两个重要极限公式</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Basic Mathematics for Machine Learning
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-03-20T02:31:47.000Z" itemprop="datePublished">2018-03-20</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Mathematics/">Mathematics</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><strong>本科学习的所有数学知识都还给数学老师了，所以在此对用到的数学基础知识进行复习和总结。</strong></p>
+<h2 id="1-导数-Derivative"><a href="#1-导数-Derivative" class="headerlink" title="1. 导数(Derivative)"></a>1. 导数(Derivative)</h2><ul>
+<li>一个函数不一定在所有的点上都有导数</li>
+<li>可导的函数一定连续；不连续的函数一定不可导</li>
+<li>原函数与反函数导数关系：<br>y=f(x)的反函数是x=g(y)，则有y’=1/x’</li>
+<li>复合函数的导数：<br>复合函数对自变量的导数，等于已知函数对中间变量的导数，乘以中间变量对自变量的导数(称为链式法则)</li>
+<li><p>链式法则:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">u=g(y)</span><br><span class="line">y=f(x)</span><br><span class="line">du/dx = (du/dy) * (dy/dx)</span><br></pre></td></tr></table></figure>
+<p>这个结论可推广到任意有限个函数复合的情形，于是复合函数的导数将是构成复合这有限个函数在相应点的导数的乘积，就像锁链一样一环套一环，故称链式法则。<br><img src="./chain_rule.png" alt=""></p>
+</li>
+<li>导数与函数的性质<br><strong>单调性</strong><br>⑴ 若导数大于零，则单调递增；若导数小于零，则单调递减；导数等于零为函数驻点，不一定为极值点。需代入驻点左右两边的数值求导数正负判断单调性。<br>⑵ 若已知函数为递增函数，则导数大于等于零；若已知函数为递减函数，则导数小于等于零。<br>根据微积分基本定理，对于可导的函数，有：<br>如果函数的导函数在某一区间内恒大于零（或恒小于零），那么函数在这一区间内单调递增（或单调递减），这种区间也称为函数的单调区间。<strong>导函数等于零的点称为函数的驻点，在这类点上函数可能会取得极大值或极小值（即极值可疑点）</strong>。进一步判断则需要知道导函数在附近的符号。对于满足的一点，如果存在使得在之前区间上都大于等于零，而在之后区间上都小于等于零，那么是一个极大值点，反之则为极小值点。<br><strong>凹凸性</strong><br>可导函数的凹凸性与其导数的单调性有关。如果函数的导函数在某个区间上单调递增，那么这个区间上函数是向下凹的，反之则是向上凸的。如果二阶导函数存在，也可以用它的正负性判断，如果在某个区间上恒大于零，则这个区间上函数是向下凹的，反之这个区间上函数是向上凸的。曲线的凹凸分界点称为曲线的拐点。(可以用Sigmoid函数曲线和其导数的曲线理解)</li>
+<li>导数为零的点不一定是极值点。当函数为常值函数，没有增减性，即没有极值点。但导数为零。（导数为零的点称之为驻点，如果驻点两侧的导数的符号相反，则该点为极值点，否则为一般的驻点，如y=x^3中f’(0)=0，x=0的左右导数符号为正，该点为一般驻点。）</li>
+</ul>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%AF%BC%E6%95%B0/579188?fr=aladdin" target="_blank" rel="noopener">导数</a></li>
+<li><a href="https://baike.baidu.com/item/%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99/3314017?fr=aladdin" target="_blank" rel="noopener">链式法则</a></li>
+</ul>
+<h2 id="2-偏导数-Partial-Derivative"><a href="#2-偏导数-Partial-Derivative" class="headerlink" title="2. 偏导数(Partial Derivative)"></a>2. 偏导数(Partial Derivative)</h2><p><strong>x方向的偏导</strong><br>设有二元函数 z=f(x,y) ，点(x0, y0)是其定义域 D 内一点。把 y 固定在 y0 而让 x 在 x0 有增量 △x，相应地函数 z=f(x, y) 有增量(称为对 x 的偏增量）△z=f(x0+△x,y0)-f(x0,y0)。<br>如果 △z 与 △x 之比当 △x→0 时的极限存在，那么此极限值称为函数 z=f(x, y) 在 (x0, y0)处对 x 的偏导数，记作 f’x(x0, y0)。函数 z=f(x, y) 在(x0, y0)处对 x 的偏导数，实际上就是把 y 固定在 y0 看成常数后，一元函数z=f(x, y0)在 x0 处的导数。<br><strong>y方向的偏导</strong><br>同样，把 x 固定在 x0，让 y 有增量 △y ，如果极限存在那么此极限称为函数 z=(x, y) 在 (x0, y0)处对 y 的偏导数, 记作f’y(x0,y0)。</p>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%81%8F%E5%AF%BC%E6%95%B0/5536984?fr=aladdin" target="_blank" rel="noopener">偏导数</a></li>
+</ul>
+<h2 id="3-数学期望"><a href="#3-数学期望" class="headerlink" title="3. 数学期望"></a>3. 数学期望</h2><p><strong>离散型随机变量</strong>:<br>离散型随机变量的一切可能的取值与对应的概率乘积之和称为该离散型随机变量的数学期望，记为E(x)。它是简单算术平均的一种推广，类似加权平均。<br>$ E(X) = \sum<em>{k=1}^{\infty}x_k<em>p_k $<br><em>*连续型随机变量</em></em>:<br>若随机变量X的分布函数F(x)可表示成一个非负可积函数f(x)的积分，则称X为连续型随机变量，f(x)称为X的概率密度函数(分布密度函数)。数学期望E(X)完全由随机变量X的概率分布所确定, 若X服从某一分布, 也称E(X)是这一分布的数学期望。<br>$ E(X) = \int</em>{-\infty}^{\infty}x*f(x) {\rm d}x $  </p>
+<p><strong>数学期望的性质</strong>:  </p>
+<ol>
+<li>E(C) = C</li>
+<li>E(CX) = C * E(X)</li>
+<li>E(X+Y) = E(X) + E(Y)</li>
+<li>当X和Y相互独立时，E(XY) = E(X)E(Y)   </li>
+</ol>
+<p>性质3和性质4可以推广到任意有限个<strong>相互独立</strong>的随机变量之和或之积的情况。  </p>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E6%95%B0%E5%AD%A6%E6%9C%9F%E6%9C%9B/5362790?fr=aladdin" target="_blank" rel="noopener">数学期望</a></li>
+</ul>
+<h2 id="4-先验概率、后验概率"><a href="#4-先验概率、后验概率" class="headerlink" title="4. 先验概率、后验概率"></a>4. 先验概率、后验概率</h2><p>“概率论只不过是把常识用数学公式表达了出来” &emsp; —- 拉普拉斯</p>
+<ol>
+<li><strong>先验概率</strong> 是指根据以往经验和分析得到的概率<br>比如骰子, 我们都知道掷到任一面的概率是1/6, 而且无数次重复实验也表明是这个数, 这是一种常识, 也是在我们不知道任何情况下必然会说出的一个值. 所谓的先验概率是我们在未知条件下对事件发生可能性猜测的数学表示</li>
+<li><strong>后验概率</strong> 事情已经发生，求这件事情发生的原因是由某个因素引起的可能性的大小<br>后验概率的这个说法和李航的《统计学习方法》中的说法不一致，李航的说法是后验概率就是P(Y=ck|X=x),Y是要预测的类，数学含义是给定样本x，其被分类到ck类的概率。 P52</li>
+</ol>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://www.cnblogs.com/yemanxiaozu/p/7680761.html" target="_blank" rel="noopener">贝叶斯公式的直观理解(先验概率/后验概率)</a></li>
+</ul>
+<h2 id="5-极大似然估计"><a href="#5-极大似然估计" class="headerlink" title="5. 极大似然估计"></a>5. 极大似然估计</h2><p>极大似然估计是参数估计的方法之一，求极大似然函数估计值的一般步骤为:</p>
+<ol>
+<li>写出似然函数</li>
+<li>对似然函数取对数，并整理</li>
+<li>求导数</li>
+<li>解似然方程</li>
+</ol>
+<h2 id="6-矩阵的秩"><a href="#6-矩阵的秩" class="headerlink" title="6. 矩阵的秩"></a>6. 矩阵的秩</h2><p>在线性代数中，一个矩阵A的列秩是A的线性无关的纵列的极大数目。类似地，行秩是A的线性无关的横行的极大数目。通俗一点说，<strong>如果把矩阵看成一个个行向量或者列向量，秩就是这些行向量或者列向量的秩，也就是极大无关组中所含向量的个数</strong>。</p>
+<ol>
+<li><strong>方阵(行数、列数相等的矩阵)的列秩和行秩总是相等的</strong>，因此它们可以简单地称作矩阵A的秩。通常表示为r(A)，rk(A)或 rank(A)</li>
+<li>m × n矩阵的秩最大为m和n中的较小者，表示为 min(m,n)。有尽可能大的秩的矩阵被称为有满秩；类似的，否则矩阵是秩不足(或称为“欠秩”)的<br>满秩 Rank(A) = min{m, n}; 不满秩 Rank(A) &lt; min{m, n} </li>
+<li>设A是一组向量，定义A的极大无关组中向量的个数为A的秩</li>
+</ol>
+<p><strong>秩的性质:</strong><br>A: m*n, B: n*s<br>(1)转置后秩不变<br>(2)r(A)&lt;=min(m,n), A是m*n型矩阵<br>(3)r(kA)=r(A), k不等于0<br>(4)r(A)=0 &lt;=&gt; A=0<br>(5)r(A+B)&lt;=r(A)+r(B)<br>(6)r(AB)&lt;=min(r(A),r(B))<br>(7)r(A)+r(B)-n&lt;=r(AB)<br>(8)P,Q为可逆矩阵, 则 r(PA)=r(A)=r(AQ)=r(PAQ)</p>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E7%9F%A9%E9%98%B5%E7%9A%84%E7%A7%A9/6285316?fr=aladdin" target="_blank" rel="noopener">矩阵的秩</a></li>
+</ul>
+<h2 id="7-范数"><a href="#7-范数" class="headerlink" title="7. 范数"></a>7. 范数</h2><p><img src="./norm.png" alt=""><br><img src="./norm2.png" alt="">  </p>
+<h2 id="8-Taylor公式"><a href="#8-Taylor公式" class="headerlink" title="8. Taylor公式"></a>8. Taylor公式</h2><p>泰勒公式是将一个在 $x=x_0$ 处具有n阶导数的函数 $f(x)$ 利用关于 $(x-x_0)$ 的n次多项式来逼近函数的方法。<br>若函数 $f(x)$ 在包含 $x_0$ 的某个闭区间[a, b]上具有n阶导数，且在开区间(a, b)上具有(n+1)阶导数，则对闭区间[a,b]上任意一点x，下式成立<br>:</p>
+<script type="math/tex; mode=display">
+f(x) = f(x_0) + f'(x_0)(x-x_0) + \frac{f''(x_0)}{2!}(x-x_0)^2 + ... + \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n + R_n(x)</script><p>其中，$f^{(n)}(x)$ 表示 $f(x)$ 的n阶导数，等号后的多项式称为<strong>函数f(x)在 $x_0$ 处的泰勒展开式</strong>，剩余的 $R_n(x)$是泰勒公式的<strong>余项，是 $(x-x_0)^n$ 的高阶无穷小</strong>。<br>$R_n(x)$余项有多种表示形式，例如拉格朗日(Lagrange)余项:</p>
+<script type="math/tex; mode=display">
+R_n(x) = \frac{f^{(n+1)}(x_0 + \theta(x-x_0))}{(n+1)!}(x-x_0)^{n+1}</script><p>其中$\theta\in(0, 1)$。  </p>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E6%B3%B0%E5%8B%92%E5%85%AC%E5%BC%8F/7681487?fr=aladdin" target="_blank" rel="noopener">泰勒公式</a></li>
+</ul>
+<h2 id="9-高阶无穷小"><a href="#9-高阶无穷小" class="headerlink" title="9. 高阶无穷小"></a>9. 高阶无穷小</h2><p>对于两个无穷小量 $\alpha$ 和 $\beta$ ，如果 $\lim\frac{\alpha}{\beta}=0$ ，就把 $\alpha$ 叫做比 $\beta$ 高阶的无穷小量，并把 $\beta$ 叫做比 $\alpha$ 低阶的无穷小量；简称 $\alpha$ 是 $\beta$ 的高阶无穷小，$\beta$ 是 $\alpha$ 的低阶无穷小，记成 $\alpha = o(\beta)$ 。<br>如果 $\lim\frac{\alpha}{\beta^k}=C$ ，其中 $C$ 为异于零的常数，这时把 $\alpha$ 叫做 $\beta$ 的 $k$ 阶无穷小。<br>例如，因为 $\displaystyle \lim<em>{x \to 0}\frac{3x^2}{x} = \lim</em>{x \to 0}3x = 3\lim_{x \to 0}x = 3*0 = 0$ ，所以 $x \to 0$ 时 $3x^2$ 是比 $x$ 较高阶的无穷小，<strong>意思是说在 $x \to 0$ 的过程中 $3x^2$ 比 $x$ 趋向0的速度快</strong>。  </p>
+<h2 id="10-取模和取余"><a href="#10-取模和取余" class="headerlink" title="10. 取模和取余"></a>10. 取模和取余</h2><p>对于整型数a，b来说，取模运算或者取余运算的方法都是:  </p>
+<ol>
+<li>求整数商: <code>c = a / b</code>  </li>
+<li>计算模或者余数: <code>r = a - c * b</code>  </li>
+</ol>
+<p><strong>取模运算和取余运算在第一步不同: 取余运算在取c的值时，向 0 方向舍入；而取模运算在计算c的值时，向负无穷方向舍入。</strong><br>例如计算 -7 mod 4<br>那么a = -7, b = 4<br>第一步: 求整数商c，如进行取模运算c = -2(向负无穷方向舍入)，求余c = -1(向0方向舍入)<br>第二步: 计算模和余数的公式相同，但因为c的值不同，取模时r = 1，取余时r = -3<br><strong>归纳:</strong>  </p>
+<ul>
+<li>当a和b符号一致时，取模运算和取余运算所得的c的值一致，因此结果一致</li>
+<li>当符号不一致时，结果不一样。取模运算结果的符号和b一致，取余运算结果的符号和a一致</li>
+</ul>
+<p>另外各个环境下%运算符的含义不同，比如C/C++，Java 为取余，而Python则为取模</p>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%8F%96%E6%A8%A1%E8%BF%90%E7%AE%97/10739384?fr=aladdin" target="_blank" rel="noopener">取模运算</a></li>
+</ul>
+<p>两个整数 a和b，若它们除以正整数 m 所得的余数相等，则称 a，b对于模m同余，记作 ${a \equiv b {\pmod {m}}}$, 读作a同余于b模m，或读作a与b关于模m同余。<br>比如 $26 \equiv 14{\pmod {12}}$。  </p>
+<p><strong>性质</strong>:</p>
+<ol>
+<li>整除性  <a href="https://blog.csdn.net/northeastsqure/article/details/50163031" target="_blank" rel="noopener">https://blog.csdn.net/northeastsqure/article/details/50163031</a><br>$ a\equiv b{\pmod {m}} \Rightarrow c \cdot m=a-b, c \in \mathbb {Z}$ 即是说 a 和 b 之差是 m 的倍数  </li>
+<li>传递性<br>$ {\left.{\begin{matrix}a\equiv b{\pmod {m}}\b\equiv c{\pmod {m}}\end{matrix}}\right}\Rightarrow a\equiv c{\pmod {m}}}$</li>
+<li><p>保持基本运算  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;\left.&#123;\begin&#123;matrix&#125;a\equiv b&#123;\pmod &#123;m&#125;&#125;\\c\equiv d&#123;\pmod &#123;m&#125;&#125;\end&#123;matrix&#125;&#125;\right\&#125; \Rightarrow  \left\&#123;&#123;\begin&#123;matrix&#125;a\pm c\equiv b\pm d&#123;\pmod &#123;m&#125;&#125;\\ac\equiv bd&#123;\pmod &#123;m&#125;&#125;\end&#123;matrix&#125;&#125;\right.&#125;</span><br></pre></td></tr></table></figure>
+<p><em>(Not working for mathjax, so I have to place it in a code block, 可以参见参考链接<a href="https://zh.wikipedia.org/wiki/%E5%90%8C%E9%A4%98" target="_blank" rel="noopener">同余</a>)</em>.<br>这性质更可进一步引申成为这样:<br>${a\equiv b{\pmod {m}}\Rightarrow {\begin{cases}an\equiv bn{\pmod {m}},\forall n\in \mathbb {Z} \a^{n}\equiv b^{n}{\pmod {m}},\forall n\in \mathbb {N} ^{0}\end{cases}}}$</p>
+</li>
+<li>放大缩小底数<br>k为整数，n为正整数  ${(km\pm a)^{n}\equiv (\pm a)^{n}{\pmod {m}}}$</li>
+<li>放大缩小模数<br>k为正整数，${a\equiv b{\pmod {m}}}$，当且仅当 ${ka\equiv kb{\pmod {km}}}$</li>
+</ol>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%90%8C%E9%A4%98" target="_blank" rel="noopener">同余</a></li>
+</ul>
+<h2 id="11-卡方分布-chi-square-distribution"><a href="#11-卡方分布-chi-square-distribution" class="headerlink" title="11. 卡方分布(chi-square distribution)"></a>11. 卡方分布(chi-square distribution)</h2><p>若n个相互独立的随机变量ξ₁、ξ₂、……、ξn ，均服从<strong>标准正态分布</strong>(也称<strong>独立同分布于标准正态分布</strong>)，则这n个服从标准正态分布的随机变量的平方和${\displaystyle Q=\sum_{i=1}^{n}\xi_i^2}$ 构成一新的随机变量，其分布规律称为$\chi^2$分布(chi-square distribution)，其中参数v称为自由度，正如正态分布中均数或方差不同就是另一个正态分布一样，自由度不同就是另一个$\chi^2$分布。记为$Q\sim\chi^2(v)$或者$Q\sim\chi_v^2$ (其中$v=n-k$，k为限制条件数)。<br>卡方分布是由正态分布构造而成的一个新的分布，当自由度v很大时，$\chi^2$分布近似为正态分布。<br>对于任意正整数x，自由度为v的卡方分布是一个随机变量X的机率分布。  </p>
+<p><strong>卡方分布性质</strong>:  </p>
+<ol>
+<li>$\chi^2$分布在第一象限内，卡方值都是正值，呈正偏态(右偏态)，随着参数v的增大，$\chi^2$分布趋近于正态分布. <strong>卡方分布密度曲线下的面积都是1</strong></li>
+<li>$\chi^2$分布的均值与方差可以看出，随着自由度v的增大，$\chi^2$分布向正无穷方向延伸(因为均值v越来越大)，分布曲线也越来越低阔(因为方差2v越来越大)</li>
+<li>不同的自由度决定不同的卡方分布，自由度越小，分布越偏斜</li>
+<li>若$\chi<em>{(v_1)}^2$, $\chi</em>{(v<em>2)}^2$互相独立，则$\chi</em>{(v<em>1)}^2 + \chi</em>{(v_2)}^2$服从$\chi^2$分布，自由度为$v_1 + v_2$</li>
+<li>$\chi^2$分布的<strong>均数为自由度v</strong>，记为 $E(\chi^2) = v$</li>
+<li>$\chi^2$分布的<strong>方差为2倍的自由度2v</strong>，记为 $D(\chi^2) = 2v$</li>
+</ol>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%8D%A1%E6%96%B9%E5%88%86%E5%B8%83/2714796" target="_blank" rel="noopener">卡方分布</a></li>
+</ul>
+<h2 id="12-协方差-Covariance"><a href="#12-协方差-Covariance" class="headerlink" title="12. 协方差(Covariance)"></a>12. 协方差(Covariance)</h2><p><strong>协方差</strong>表示的是两个变量的总体的误差，这与只表示一个变量误差的方差不同。 如果两个变量的变化趋势一致，也就是说如果其中一个大于自身的期望值，另外一个也大于自身的期望值，那么两个变量之间的协方差就是正值。 如果两个变量的变化趋势相反，即其中一个大于自身的期望值，另外一个却小于自身的期望值，那么两个变量之间的协方差就是负值。<br>期望值分别为E[X]与E[Y]的两个实随机变量X与Y之间的协方差Cov(X,Y)定义为：</p>
+<script type="math/tex; mode=display">
+Cov(X, Y) = E[(X-E[X])(Y-E[Y])] = E[XY] - 2E[Y]E[X] + E[X]E[Y] = E[XY] - E[X]E[Y]</script><p>如果X与Y是统计独立的，那么二者之间的协方差就是0，因为两个独立的随机变量满足$E[XY]=E[X]E[Y]$。<br>但是，<strong>反过来并不成立，即如果X与Y的协方差为0，二者并不一定是统计独立的(可能是非线性相关，如 x 和 x^2)</strong>。<br><strong>若两个随机变量X和Y相互独立，则Cov(X, Y)=0，因而若Cov(X, Y)不为零，则X和Y必不是相互独立的</strong>。  </p>
+<p><strong>协方差与方差之间有如下关系:</strong>  </p>
+<script type="math/tex; mode=display">
+D(X+Y)=D(X)+D(Y)+2Cov(X，Y)</script><script type="math/tex; mode=display">
+D(X-Y)=D(X)+D(Y)-2Cov(X，Y)</script><p><strong>协方差用于度量各个维度(如下式中的X和Y两个维度)偏离其均值的程度:</strong></p>
+<script type="math/tex; mode=display">Cov(X,Y)=\frac{\displaystyle \sum_{i=1}^{n}(X_i - \overline{X})(Y_i - \overline{Y})}{n-1}</script><p><strong>协方差的性质:</strong>  </p>
+<ul>
+<li>$Cov(X，Y)=Cov(Y，X)$</li>
+<li>$Cov(aX，bY)=abCov(X，Y)$    a，b是常数</li>
+<li>$Cov(X1+X2，Y)=Cov(X1，Y)+Cov(X2，Y)$</li>
+</ul>
+<p>由协方差定义，可以看出$Cov(X，X)=D(X)$，$Cov(Y，Y)=D(Y)$。</p>
+<script type="math/tex; mode=display">\rho_{XY}=\frac{Cov(X,Y)}{\sqrt{D(X)}\sqrt{D(Y)}}</script><p>称为随机变量X和Y的(Pearson)相关系数<br>若$\rho<em>{XY}=0$，则称X与Y**不</em>线性_相关**<br>协方差有时也称为是两个随机变量之间”线性独立性”的度量</p>
+<p><strong>协方差矩阵:</strong><br>分别为m与n个标量元素的列向量随机变量X与Y，这两个变量之间的协方差定义为m×n矩阵.其中X包含变量X1,X2,…,Xm，Y包含变量Y1,Y2,…,Yn，假设X1的期望值为μ1，Y2的期望值为v2，那么在协方差矩阵中(1,2)的元素就是X1和Y2的协方差。</p>
+<p><strong>两个向量变量的协方差Cov(X,Y)与Cov(Y,X)互为转置矩阵</strong>。<br>协方差矩阵的定义如下:</p>
+<script type="math/tex; mode=display">
+C_{n*n}=(c_{i,j})\quad其中c_{i,j}=cov(Dim_i,Dim_j)</script><p>举一个简单的三维的例子，假设数据集有{x,y,z}三个维度，则协方差矩阵为</p>
+<script type="math/tex; mode=display">
+C = \left\lgroup\begin{aligned}
+cov(x,x) \quad cov(x, y) \quad cov(x, z)\\
+cov(y,x) \quad cov(y, y) \quad cov(y, z)\\
+cov(z,x) \quad cov(z, y) \quad cov(z, z)
+\end{aligned}\right\rgroup</script><p>可见，协方差矩阵是一个对称的矩阵，而且对角线是各个维度上的方差。<br><strong>必须要明确一点，协方差矩阵计算的是<em>不同维度</em>之间的协方差，而不是<em>不同样本</em>之间的。</strong>  </p>
+<blockquote>
+<ul>
+<li>当 cov(X, Y)&gt;0时，表明 X与Y 正相关</li>
+<li>当 cov(X, Y)&lt;0时，表明 X与Y 负相关</li>
+<li>当 cov(X, Y)=0时，表明 X与Y 不是线性相关</li>
+</ul>
+</blockquote>
+<p><code>如果X与Y的协方差为0，二者并不一定是统计独立的, 只能说明X与Y不是线性相关，但有可能是非线性相关，如x和x^2</code></p>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%8D%8F%E6%96%B9%E5%B7%AE/2185936?fr=aladdin" target="_blank" rel="noopener">协方差</a></li>
+<li><a href="http://pinkyjie.com/2010/08/31/covariance/" target="_blank" rel="noopener">浅谈协方差矩阵</a></li>
+<li><a href="https://blog.csdn.net/northeastsqure/article/details/50163031" target="_blank" rel="noopener">终于明白协方差的意义了</a></li>
+</ul>
+<h2 id="13-中心极限定理"><a href="#13-中心极限定理" class="headerlink" title="13. 中心极限定理"></a>13. 中心极限定理</h2><p>正态分布有一个很重要的性质: 在特定条件下，<strong>大量 <em>统计独立</em> 的随机变量的和的分布趋于正态分布，这就是中心极限定理</strong>。中心极限定理的重要意义在于，<strong>依据这一定理的结论，其它概率分布能够用正态分布作为近似。</strong></p>
+<h2 id="14-两个重要极限公式"><a href="#14-两个重要极限公式" class="headerlink" title="14. 两个重要极限公式"></a>14. 两个重要极限公式</h2><ol>
+<li>$\displaystyle \lim_{x \to 0} \frac{sin x}{x} = 1$</li>
+<li>$\displaystyle \lim<em>{x \to 0} (1+x)^{\frac{1}{x}} = e$ 或 $\displaystyle \lim</em>{x \to \infty} (1+\frac{1}{x})^{x} = e$</li>
+</ol>
+<p><strong>References</strong>:  </p>
+<ul>
+<li><a href="https://blog.csdn.net/baishuiniyaonulia/article/details/78991682" target="_blank" rel="noopener">两个重要极限及相关推导极限</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-导数-Derivative"><span class="toc-number">1.</span> <span class="toc-text">1. 导数(Derivative)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-偏导数-Partial-Derivative"><span class="toc-number">2.</span> <span class="toc-text">2. 偏导数(Partial Derivative)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-数学期望"><span class="toc-number">3.</span> <span class="toc-text">3. 数学期望</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-先验概率、后验概率"><span class="toc-number">4.</span> <span class="toc-text">4. 先验概率、后验概率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-极大似然估计"><span class="toc-number">5.</span> <span class="toc-text">5. 极大似然估计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-矩阵的秩"><span class="toc-number">6.</span> <span class="toc-text">6. 矩阵的秩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-范数"><span class="toc-number">7.</span> <span class="toc-text">7. 范数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Taylor公式"><span class="toc-number">8.</span> <span class="toc-text">8. Taylor公式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-高阶无穷小"><span class="toc-number">9.</span> <span class="toc-text">9. 高阶无穷小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-取模和取余"><span class="toc-number">10.</span> <span class="toc-text">10. 取模和取余</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-卡方分布-chi-square-distribution"><span class="toc-number">11.</span> <span class="toc-text">11. 卡方分布(chi-square distribution)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-协方差-Covariance"><span class="toc-number">12.</span> <span class="toc-text">12. 协方差(Covariance)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-中心极限定理"><span class="toc-number">13.</span> <span class="toc-text">13. 中心极限定理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-两个重要极限公式"><span class="toc-number">14.</span> <span class="toc-text">14. 两个重要极限公式</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&text=Basic Mathematics for Machine Learning"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&is_video=false&description=Basic Mathematics for Machine Learning"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Basic Mathematics for Machine Learning&body=Check out this article: http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&title=Basic Mathematics for Machine Learning"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2018/03/20/Basic-Mathematics-for-Machine-Learning/&name=Basic Mathematics for Machine Learning&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

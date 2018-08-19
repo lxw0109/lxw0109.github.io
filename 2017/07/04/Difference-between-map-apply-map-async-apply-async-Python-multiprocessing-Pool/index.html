@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="在multiprocessing.Pool中有4种方法可以用来将任务分给到各个子进程，分别是apply，apply_async，map，map_async，4种方法的对比请见下表(原文中的表)：      Multi-args Concurrence Blocking Ordered-results     apply YES NO YES NO   apply_async YES YES NO">
+<meta name="keywords" content="Python,multiprocessing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)">
+<meta property="og:url" content="http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="在multiprocessing.Pool中有4种方法可以用来将任务分给到各个子进程，分别是apply，apply_async，map，map_async，4种方法的对比请见下表(原文中的表)：      Multi-args Concurrence Blocking Ordered-results     apply YES NO YES NO   apply_async YES YES NO">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.625Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)">
+<meta name="twitter:description" content="在multiprocessing.Pool中有4种方法可以用来将任务分给到各个子进程，分别是apply，apply_async，map，map_async，4种方法的对比请见下表(原文中的表)：      Multi-args Concurrence Blocking Ordered-results     apply YES NO YES NO   apply_async YES YES NO">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/07/19/Learning-Notes-on-ElasticSearch/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/06/21/pymongo-errors-DuplicateKeyError-E11000-duplicate-key-error/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&text=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&is_video=false&description=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)&body=Check out this article: http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&name=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-07-04T01:39:02.000Z" itemprop="datePublished">2017-07-04</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Python/">Python</a>, <a class="tag-link" href="/tags/multiprocessing/">multiprocessing</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>在<code>multiprocessing.Pool</code>中有4种方法可以用来将任务分给到各个子进程，分别是<code>apply</code>，<code>apply_async</code>，<code>map</code>，<code>map_async</code>，4种方法的对比请见下表(<a href="http://blog.shenwei.me/python-multiprocessing-pool-difference-between-map-apply-map_async-apply_async/" target="_blank" rel="noopener">原文中的表</a>)：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Multi-args</th>
+<th><strong>Concurrence</strong></th>
+<th>Blocking</th>
+<th>Ordered-results</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>apply</td>
+<td>YES</td>
+<td><strong>NO</strong></td>
+<td>YES</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>apply_async</td>
+<td>YES</td>
+<td>YES</td>
+<td>NO</td>
+<td><strong>NO</strong></td>
+</tr>
+<tr>
+<td>map</td>
+<td>NO</td>
+<td>YES</td>
+<td>YES</td>
+<td><strong>YES</strong></td>
+</tr>
+<tr>
+<td>map_async</td>
+<td>NO</td>
+<td>YES</td>
+<td>NO</td>
+<td><strong>YES</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol>
+<li>需要说明的是，最后一列<code>Ordered-results</code>表示各个方法<strong>返回的结果</strong>是否是有序的。也就是说(以下面的程序为例)不是表示程序中<code>print</code>语句的执行顺序是否有序(<code>print</code>的结果不一定有序)，而是表示<strong>各个函数的返回值是否是按照<em>调用的顺序</em>返回的</strong>。</li>
+<li>Note that <code>map</code> and <code>map_async</code> are called for a list of jobs in one time, but <code>apply</code> and <code>apply_async</code> can only called for one job. However, <code>apply_async</code> execute a job in background therefore in parallel.</li>
+</ol>
+<p>对4种方法分别进行了下面的测试，测试代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="comment"># print("[func()]pid:", os.getpid())</span></span><br><span class="line">    print(num, end=<span class="string">" "</span>, flush=<span class="keyword">True</span>)    <span class="comment"># 增加flush=True才能体现出多进程和进程池</span></span><br><span class="line">    <span class="comment"># sys.stdout.flush()    # 增加这条语句才能体现出多进程和进程池</span></span><br><span class="line">    <span class="comment"># time.sleep(0.5)</span></span><br><span class="line">    <span class="keyword">return</span> num</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">results = []</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">collect_result</span><span class="params">(result)</span>:</span>    <span class="comment"># <span class="doctag">NOTE:</span> 只能带一个参数</span></span><br><span class="line">    <span class="keyword">global</span> results</span><br><span class="line">    <span class="comment"># print("[collect_result()]pid:", os.getpid())</span></span><br><span class="line">    results.append(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">apply_map_async_demo</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    带返回值的多进程</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    COUNT = <span class="number">20</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">"\napply"</span>, <span class="string">"--"</span> * <span class="number">20</span>)</span><br><span class="line">    t = time.time()</span><br><span class="line">    local_results = []</span><br><span class="line">    <span class="keyword">with</span> multiprocessing.Pool(<span class="number">5</span>) <span class="keyword">as</span> pool:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(COUNT, <span class="number">0</span>, <span class="number">-1</span>):</span><br><span class="line">            <span class="comment"># <span class="doctag">NOTE:</span> pool.apply不支持并发: 但多个进程串行地执行每个任务(仍然是多进程执行)</span></span><br><span class="line">            local_results.append(pool.apply(func, (i,)))</span><br><span class="line">        pool.close()</span><br><span class="line">    print(<span class="string">"\n&#123;&#125;"</span>.format(local_results))</span><br><span class="line">    print(<span class="string">"apply time cost:"</span>, time.time() - t, <span class="string">"\n"</span>, <span class="string">"**"</span>*<span class="number">30</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"\napply_async"</span>, <span class="string">"--"</span> * <span class="number">20</span>)</span><br><span class="line">    t = time.time()</span><br><span class="line">    <span class="keyword">with</span> multiprocessing.Pool(<span class="number">5</span>) <span class="keyword">as</span> pool:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(COUNT, <span class="number">0</span>, <span class="number">-1</span>):</span><br><span class="line">            pool.apply_async(func, (i,), callback=collect_result)    <span class="comment"># 并发. callback是可选的, 可以不使用该字段</span></span><br><span class="line">        pool.close()</span><br><span class="line">        pool.join()</span><br><span class="line">    <span class="keyword">global</span> results</span><br><span class="line">    print(<span class="string">"\n&#123;&#125;"</span>.format(results))</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    # NOTE: print的结果是无序的 </span></span><br><span class="line"><span class="string">    20 19 18 17 16 14 13 15 12 11 10 9 7 6 8 5 4 3 2 1</span></span><br><span class="line"><span class="string">    # NOTE: 返回的结果也是无序的(apply_async不保证返回值的顺序)</span></span><br><span class="line"><span class="string">    [20, 18, 19, 16, 17, 14, 13, 12, 11, 10, 9, 7, 6, 5, 4, 3, 15, 2, 8, 1]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    print(<span class="string">"apply_async time cost:"</span>, time.time() - t, <span class="string">"\n"</span>, <span class="string">"**"</span>*<span class="number">30</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"\nmap"</span>, <span class="string">"--"</span> * <span class="number">20</span>)</span><br><span class="line">    t = time.time()</span><br><span class="line">    <span class="keyword">with</span> multiprocessing.Pool(<span class="number">5</span>) <span class="keyword">as</span> pool:</span><br><span class="line">        results = pool.map(func, range(COUNT, <span class="number">0</span>, <span class="number">-1</span>))    <span class="comment"># 并发</span></span><br><span class="line">        pool.close()</span><br><span class="line">    print(<span class="string">"\n&#123;&#125;"</span>.format(results))</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    # NOTE: print的结果是无序的</span></span><br><span class="line"><span class="string">    20 19 17 16 18 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1</span></span><br><span class="line"><span class="string">    # NOTE: 但返回的结果是有序的(map能够保证返回值的顺序按照函数调用的顺序)</span></span><br><span class="line"><span class="string">    [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    print(<span class="string">"map:"</span>, time.time() - t, <span class="string">"\n"</span>, <span class="string">"**"</span>*<span class="number">30</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"\nmap_async"</span>, <span class="string">"--"</span> * <span class="number">20</span>)</span><br><span class="line">    t = time.time()</span><br><span class="line">    results = []</span><br><span class="line">    <span class="keyword">with</span> multiprocessing.Pool(<span class="number">5</span>) <span class="keyword">as</span> pool:</span><br><span class="line">        pool.map_async(func, range(COUNT, <span class="number">0</span>, <span class="number">-1</span>), callback=collect_result)    <span class="comment"># 并发. callback是可选的, 可以不使用该字段</span></span><br><span class="line">        pool.close()</span><br><span class="line">        pool.join()</span><br><span class="line">    print(<span class="string">"\n&#123;&#125;"</span>.format(results))</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    # NOTE: print的结果是无序的</span></span><br><span class="line"><span class="string">    20 19 17 18 16 15 13 14 10 12 9 8 7 6 11 5 4 3 2 1 </span></span><br><span class="line"><span class="string">    # NOTE: 但返回的结果是有序的(map_async能够保证返回值的顺序按照函数调用的顺序)</span></span><br><span class="line"><span class="string">    # map和map_async的结果是以list的形式返回的, 所以只会调用collect_result一次，因此结果是list of list</span></span><br><span class="line"><span class="string">    [[20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    print(<span class="string">"map_async:"</span>, time.time() - t, <span class="string">"\n"</span>, <span class="string">"**"</span>*<span class="number">30</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"end"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    apply_map_async_demo()</span><br></pre></td></tr></table></figure>
+<p>代码运行结果如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">apply ----------------------------------------</span><br><span class="line">20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1    <span class="comment"># 不保证有序</span></span><br><span class="line">[20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]    <span class="comment"># 不保证有序</span></span><br><span class="line">apply time cost: 0.13375353813171387 </span><br><span class="line"> ************************************************************</span><br><span class="line"></span><br><span class="line">apply_async ----------------------------------------</span><br><span class="line">20 19 18 17 16 14 13 15 12 11 10 9 7 6 8 5 4 3 2 1    <span class="comment"># 无序</span></span><br><span class="line">[20, 18, 19, 16, 17, 14, 13, 12, 11, 10, 9, 7, 6, 5, 4, 3, 15, 2, 8, 1]    <span class="comment"># 无序</span></span><br><span class="line">apply_async time cost: 0.10675978660583496 </span><br><span class="line"> ************************************************************</span><br><span class="line"></span><br><span class="line">map ----------------------------------------</span><br><span class="line">20 19 17 16 18 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1    <span class="comment"># 无序</span></span><br><span class="line">[20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]    <span class="comment"># 有序</span></span><br><span class="line">map: 0.10820269584655762 </span><br><span class="line"> ************************************************************</span><br><span class="line"></span><br><span class="line">map_async ----------------------------------------</span><br><span class="line">20 19 17 18 16 15 13 14 10 12 9 8 7 6 11 5 4 3 2 1    <span class="comment"># 无序</span></span><br><span class="line">[[20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]]    <span class="comment"># 有序</span></span><br><span class="line">map_async: 0.11021280288696289 </span><br><span class="line"> ************************************************************</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<!-- Reference -->
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&text=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&is_video=false&description=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)&body=Check out this article: http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&title=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2017/07/04/Difference-between-map-apply-map-async-apply-async-Python-multiprocessing-Pool/&name=Difference between map, apply, map_async, apply_async(Python multiprocessing.Pool)&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+

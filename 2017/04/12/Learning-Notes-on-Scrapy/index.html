@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Scrapy 1.3 documentation1.  XPath expressions are very powerful, and are the foundation of Scrapy Selectors. In fact, CSS selectors are converted to XPath under-the-hood.Scrapy Tutorial-XPath: a brief">
+<meta name="keywords" content="Python,Scrapy,Spider">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning Notes on Scrapy">
+<meta property="og:url" content="http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/index.html">
+<meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
+<meta property="og:description" content="Scrapy 1.3 documentation1.  XPath expressions are very powerful, and are the foundation of Scrapy Selectors. In fact, CSS selectors are converted to XPath under-the-hood.Scrapy Tutorial-XPath: a brief">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T07:59:34.630Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Learning Notes on Scrapy">
+<meta name="twitter:description" content="Scrapy 1.3 documentation1.  XPath expressions are very powerful, and are the foundation of Scrapy Selectors. In fact, CSS selectors are converted to XPath under-the-hood.Scrapy Tutorial-XPath: a brief">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+    
+    <!-- title -->
+    <title>Learning Notes on Scrapy</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+    
+</head>
+
+<body>
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/04/26/Novels/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/04/10/Python3-6-Scrapy安装和使用/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&text=Learning Notes on Scrapy"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&is_video=false&description=Learning Notes on Scrapy"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Learning Notes on Scrapy&body=Check out this article: http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&name=Learning Notes on Scrapy&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Scrapy-1-3-documentation"><span class="toc-number">1.</span> <span class="toc-text">Scrapy 1.3 documentation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FAQs"><span class="toc-number">2.</span> <span class="toc-text">FAQs</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        <!-- -->
+        <header id="header">
+  <a href="/">
+  
+    
+      <div id="logo" style="background-image: url(/images/lxw.png);"></div>
+    
+  
+    <div id="title">
+      <h1>Xiaowei Liu&#39;s Blog</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#"><i class="fa fa-bars fa-2x"></i></a>
+      </li>
+       
+        <li><a href="/">Home</a></li>
+       
+        <li><a href="/archives/">Articles</a></li>
+       
+        <li><a href="/about/">About</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Learning Notes on Scrapy
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Xiaowei Liu's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-04-12T08:22:30.000Z" itemprop="datePublished">2017-04-12</time>
+    </div>
+
+
+          <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Python/">Python</a>, <a class="tag-link" href="/tags/Scrapy/">Scrapy</a>, <a class="tag-link" href="/tags/Spider/">Spider</a>
+    </div>
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="Scrapy-1-3-documentation"><a href="#Scrapy-1-3-documentation" class="headerlink" title="Scrapy 1.3 documentation"></a>Scrapy 1.3 documentation</h3><p>1.</p>
+<blockquote>
+<p>XPath expressions are very powerful, and are the foundation of Scrapy Selectors. <strong>In fact, CSS selectors are converted to XPath under-the-hood.</strong><br><a href="https://docs.scrapy.org/en/latest/intro/tutorial.html#xpath-a-brief-intro" target="_blank" rel="noopener">Scrapy Tutorial-XPath: a brief intro</a></p>
+</blockquote>
+<p>2.</p>
+<blockquote>
+<p>What you see here is Scrapy’s mechanism of following links: when you yield a Request in a callback method, Scrapy will schedule that request to be sent and register a callback method to be executed when that request finishes.<br><a href="https://docs.scrapy.org/en/latest/intro/tutorial.html#following-links" target="_blank" rel="noopener">Scrapy Tutorial-Following links</a></p>
+</blockquote>
+<p>3.</p>
+<blockquote>
+<p>Another interesting thing this spider demonstrates is that, even if there are many quotes from the same author, we don’t need to worry about visiting the same author page multiple times. <strong>By default, Scrapy filters out duplicated requests to URLs already visited, avoiding the problem of hitting servers too much because of a programming mistake. This can be configured by the setting DUPEFILTER_CLASS.</strong><br><a href="https://docs.scrapy.org/en/latest/intro/tutorial.html#more-examples-and-patterns" target="_blank" rel="noopener">Scrapy Tutorial-More examples and patterns</a></p>
+</blockquote>
+<p>4.使用Selenium(PhantomJS/Chrome)进行数据爬取时，如果使用User-Agent池，那么User-Agent Middleware的优先级必须要比Selenium的优先级高，否则User-Agent无法加到Selenium的请求中<br><a href="https://github.com/hee0624/fintech_spider/blob/master/demo/PhantomJSTests/PhantomJSScrapy/PhantomJSScrapy/settings.py" target="_blank" rel="noopener">fintech_spider/demo/PhantomJSTests/PhantomJSScrapy/PhantomJSScrapy/settings.py</a></p>
+<p>5.</p>
+<ul>
+<li>yield重复的GET请求，Scrapy会将其自动过滤掉</li>
+<li>yield重复的POST请求(完全相同的POST请求:URL和参数都相同)也会被Scrapy自动过滤掉; 不同的POST body不会被Scrapy过滤掉</li>
+</ul>
+<p>6.<br>1).XPath解析：<br>html网页源文件中各个标签的id属性必须是唯一的（但对于不规范的网页来说，id相同也是有可能的）<br>class通常都是不唯一的，如果要用class需要在源代码中检索一下<br>所以使用XPath进行定位时，一般先定位到一个离目标标签最近的具有id属性的父级标签(包括但不局限于div标签)然后再通过该标签定位到目标标签<br>2).可以把“右键-&gt;查看网页源代码”的源代码拷贝到sublime或者pycharm，就可以折叠代码了<br>3).<a href="http://www.cnblogs.com/Bright-Star/p/4163107.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">注意事项</a><br>如果在某个xpath对象下继续使用xpath规则提取, 当提取某个对象下的所有tr标签.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html = response.xpath(<span class="string">"/html/body"</span>)</span><br><span class="line">tr = html.xpath(<span class="string">".//tr"</span>) <span class="comment">#搜索body下的所有tr必须加上'.', 否则搜索的是整个文档的所有tr</span></span><br></pre></td></tr></table></figure></p>
+<p>7.scrapy shell url<br>注意利用view(response)在浏览器中观察爬虫看到的网页是否和我们看到的网页一样，其实大部分都是不相同的。  </p>
+<p>8.CSS selector:  </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>选择所有节点</td>
+</tr>
+<tr>
+<td>#container</td>
+<td>选择id为container的节点</td>
+</tr>
+<tr>
+<td>.container</td>
+<td>选择所有class<strong>包含</strong>container的节点</td>
+</tr>
+<tr>
+<td>li a</td>
+<td>选取所有li下的所有a节点(li和a是父子节点)</td>
+</tr>
+<tr>
+<td>ul + p</td>
+<td>选取ul后面的第一个p节点(ul和p是兄弟节点)</td>
+</tr>
+<tr>
+<td>div#container &gt; ul</td>
+<td>选取id为container的div节点下的<strong>第一个</strong>ul子节点</td>
+</tr>
+<tr>
+<td>ul ~ p</td>
+<td>选取与ul相邻的所有p节点</td>
+</tr>
+<tr>
+<td>a[title]</td>
+<td>选取所有有title属性的a节点</td>
+</tr>
+<tr>
+<td>a[href=”<a href="http://jobbole.com" target="_blank" rel="noopener">http://jobbole.com</a>“]</td>
+<td>选取所有href属性值为”<a href="http://jobbole.com&quot;的a节点" target="_blank" rel="noopener">http://jobbole.com&quot;的a节点</a></td>
+</tr>
+<tr>
+<td>a[href*=”jobbole”]</td>
+<td>选取所有href属性值包含”jobbole”的a节点</td>
+</tr>
+<tr>
+<td>a[href^=”http”]</td>
+<td>选取所有href属性值以”http”开头的a节点</td>
+</tr>
+<tr>
+<td>a[href$=”.jpg”]</td>
+<td>选取所有href属性值以”.jpg”结尾的a节点</td>
+</tr>
+<tr>
+<td>input[type=radio]:checked</td>
+<td>选取状态为选中的radio节点</td>
+</tr>
+<tr>
+<td>div:not(#container)</td>
+<td>选取所有id不为container的div节点</td>
+</tr>
+<tr>
+<td>li:nth-child(3)</td>
+<td>选取第三个li节点</td>
+</tr>
+<tr>
+<td>tr:nth-child(2n)</td>
+<td>选取第偶数个tr</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="FAQs"><a href="#FAQs" class="headerlink" title="FAQs"></a>FAQs</h3><p>1.<a href="http://blog.csdn.net/haipengdai/article/details/48545231" target="_blank" rel="noopener">scrapy爬虫防止被禁止User-Agent切换</a><br>2.<a href="http://python.jobbole.com/81320/" target="_blank" rel="noopener">Python下用Scrapy和MongoDB构建爬虫系统(1)</a><br>3.<a href="http://www.jb51.net/article/79666.htm" target="_blank" rel="noopener">讲解Python的Scrapy爬虫框架使用代理进行采集的方法</a><br>4.<br><code>Spider</code> - a browser like program that downloads web pages.<br><code>Crawler</code> – a program that automatically follows all of the links on each web page.<br>Robots - An automated computer program that visit websites &amp; perform predefined task.</p>
+<p><code>Crawler(scrapy.crawler)</code> is the main entry point to Scrapy API. It provides access to all Scrapy core components, and it’s used to hook extensions functionality into Scrapy.<br><code>Scraper(scrapy.core.scraper)</code> component is responsible for parsing responses and extracting information from them. It’s being run from the Engine, and it’s used to run your spiders.<br><code>scrapy.spiders</code> is a module containing base Spider implementation (that you use to write your spiders), together with some common spiders available out of the box (like the CrawlSpider for ruleset-based crawling, the SitemapSpider for sitemap based crawling, or XMLFeedSpider for crawling the XML feeds).</p>
+<p><a href="http://www.webdeveloper.com/forum/showthread.php?278773-what-is-difference-between-spider-crawler-and-robots" target="_blank" rel="noopener">what is difference between spider, crawler and robots?</a><br><a href="http://stackoverflow.com/questions/34260886/difference-between-scraper-crawler-and-spider-in-the-context-of-scrapy" target="_blank" rel="noopener">Difference between scraper, crawler and spider in the context of Scrapy</a></p>
+<!--References-->
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Scrapy-1-3-documentation"><span class="toc-number">1.</span> <span class="toc-text">Scrapy 1.3 documentation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FAQs"><span class="toc-number">2.</span> <span class="toc-text">FAQs</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&text=Learning Notes on Scrapy"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&is_video=false&description=Learning Notes on Scrapy"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Learning Notes on Scrapy&body=Check out this article: http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&title=Learning Notes on Scrapy"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiaoweiliu.cn/2017/04/12/Learning-Notes-on-Scrapy/&name=Learning Notes on Scrapy&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Xiaowei Liu
+  </div>
+  <!--
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Articles</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+  -->
+</footer>
+
+    <script type="text/javascript" color="43,188,138" opacity="0.5" zindex="-2" count="36" src="js/canvas-nest.js"></script>    <!-- 背景蒲公英 -->
+    <!-- <embed width="200" height="200" align="middle" src="http://images.cnblogs.com/cnblogs_com/csharp/clock.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"> --> <!-- clock -->
+    <script>
+    (function() {
+        var OriginTitile = document.title, titleTime;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.title = 'Will you be back?';
+                clearTimeout(titleTime);
+            } else {
+                document.title = 'Welcome back!';
+                titleTime = setTimeout(function() {
+                    document.title = OriginTitile;
+                },2000);
+            }
+        });
+    })();
+    </script>
+
+    <!-- mathjax config similar to math.stackexchange -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [ ['$$', '$$'] ],
+            displayMath: [ ['$$$', '$$$']],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        messageStyle: "none",
+        "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
