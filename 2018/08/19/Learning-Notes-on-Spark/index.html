@@ -15,7 +15,7 @@
 <meta property="og:description" content="Spark提供了一系列的操作RDD中的数据:    创建操作(Creation Operation): RDD由SparkContext通过内存数据或外部文件系统创建   转换操作(Transformation Operation): 将RDD通过转换操作变为另一个RDD，转换操作是lazy的(惰性), 这期间不会产生任何数据的计算. Spark提供了distinct、filter、map、fla">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaoweiliu.cn/2018/08/19/Learning-Notes-on-Spark/terminologies.png">
-<meta property="og:updated_time" content="2018-08-19T10:01:41.647Z">
+<meta property="og:updated_time" content="2018-08-19T13:09:31.035Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Learning Notes on Spark">
 <meta name="twitter:description" content="Spark提供了一系列的操作RDD中的数据:    创建操作(Creation Operation): RDD由SparkContext通过内存数据或外部文件系统创建   转换操作(Transformation Operation): 将RDD通过转换操作变为另一个RDD，转换操作是lazy的(惰性), 这期间不会产生任何数据的计算. Spark提供了distinct、filter、map、fla">
@@ -183,6 +183,13 @@
 </ul>
 <p>Spark RDD只支持粗粒度的操作，对一个RDD的操作都会被作用于该RDD的所有数据；为了保证RDD的高可用性RDD通过使用Lineage(血统)记录了RDD演变流程(从其他RDD到当前RDD所做的操作)。当RDD分区数据丢失时可以通过Lineage的信息重新计算与恢复分区数据，或进行RDD的重建。  </p>
 <p>References:<br>1.<a href="https://blog.csdn.net/lbyyy/article/details/53334019" target="_blank" rel="noopener">Spark入门基础教程</a> 错别字和不通的句子比较多，不推荐阅读<br>2.<a href="http://spark.apache.org/docs/latest/" target="_blank" rel="noopener">Spark Overview</a></p>
+<blockquote>
+<p>After Spark 2.0, RDDs are replaced by Dataset, which is strongly-typed like an RDD, but with richer optimizations under the hood. We highly recommend you to switch to use Dataset, which has better performance than RDD.</p>
+</blockquote>
+<p>References:  </p>
+<ol>
+<li><a href="http://spark.apache.org/docs/latest/quick-start.html" target="_blank" rel="noopener">Spark Quick Start</a></li>
+</ol>
 
   </div>
 </article>
