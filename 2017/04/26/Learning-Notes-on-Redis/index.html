@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Redis Notes1.Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1) Redis命令1.keys *: 查看Redis中所有的key如果有大量的key, 尽可能不要在生产环境下用keys指令, 太占用资源了.keys link*, keys name*, keys n*2.1)Installing redis-dump1$ [sudo] npm install r">
+    <meta name="description" content="Redis Notes1.Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1)2.Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。zset的成员是唯一的,但分数(score)却可以重复。   Redis命令1.keys *:">
 <meta name="keywords" content="Database,Redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Learning Notes on Redis">
 <meta property="og:url" content="http://xiaoweiliu.cn/2017/04/26/Learning-Notes-on-Redis/index.html">
 <meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
-<meta property="og:description" content="Redis Notes1.Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1) Redis命令1.keys *: 查看Redis中所有的key如果有大量的key, 尽可能不要在生产环境下用keys指令, 太占用资源了.keys link*, keys name*, keys n*2.1)Installing redis-dump1$ [sudo] npm install r">
+<meta property="og:description" content="Redis Notes1.Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1)2.Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。zset的成员是唯一的,但分数(score)却可以重复。   Redis命令1.keys *:">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-19T07:59:34.630Z">
+<meta property="og:updated_time" content="2018-09-18T03:00:25.491Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Learning Notes on Redis">
-<meta name="twitter:description" content="Redis Notes1.Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1) Redis命令1.keys *: 查看Redis中所有的key如果有大量的key, 尽可能不要在生产环境下用keys指令, 太占用资源了.keys link*, keys name*, keys n*2.1)Installing redis-dump1$ [sudo] npm install r">
+<meta name="twitter:description" content="Redis Notes1.Redis中集合是通过哈希表实现的，所以添加、删除、查找的复杂度都是O(1)2.Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。zset的成员是唯一的,但分数(score)却可以重复。   Redis命令1.keys *:">
     
     
         
@@ -161,7 +161,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h3 id="Redis-Notes"><a href="#Redis-Notes" class="headerlink" title="Redis Notes"></a>Redis Notes</h3><p>1.Redis中集合是通过<code>哈希表</code>实现的，所以添加、删除、查找的复杂度都是O(1)</p>
+    <h3 id="Redis-Notes"><a href="#Redis-Notes" class="headerlink" title="Redis Notes"></a>Redis Notes</h3><p>1.Redis中集合是通过<code>哈希表</code>实现的，所以添加、删除、查找的复杂度都是O(1)<br>2.Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。<br>不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。<br><strong>zset的成员是唯一的,但分数(score)却可以重复。</strong>  </p>
 <h3 id="Redis命令"><a href="#Redis命令" class="headerlink" title="Redis命令"></a>Redis命令</h3><p>1.<code>keys *</code>: 查看Redis中所有的key<br>如果有大量的key, 尽可能不要在生产环境下用<code>keys</code>指令, 太占用资源了.<br><code>keys link*</code>, <code>keys name*</code>, <code>keys n*</code><br>2.<br>1)Installing redis-dump<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ [sudo] npm install redis-dump -g</span><br></pre></td></tr></table></figure></p>
 <p>Reference: <a href="https://www.npmjs.com/package/redis-dump" target="_blank" rel="noopener">redis-dump</a><br>2)<code>redis-dump -h 192.168.1.29 -p 6379 &gt; 29redis-dump.txt</code><br>3)<code>cat 29redis-dump.txt|redis-cli</code></p>
 
