@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
 <meta property="og:description" content="0.常用机器学习算法的损失函数    算法 损失函数     决策树 $L_\alpha(T) = L(T) + \alpha\mid{T}\mid$ 其中$C(T)$是对训练数据的预测误差(如基尼指数), $\mid T\mid$为子树的叶节点个数   Logistic Regression     1.batch_size如何选择？线性神经元在均方误差代价函数的错误面是一个抛物面，横截面是椭圆">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-19T07:59:34.628Z">
+<meta property="og:updated_time" content="2019-01-30T11:24:54.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Learning Notes on Machine Learning">
 <meta name="twitter:description" content="0.常用机器学习算法的损失函数    算法 损失函数     决策树 $L_\alpha(T) = L(T) + \alpha\mid{T}\mid$ 其中$C(T)$是对训练数据的预测误差(如基尼指数), $\mid T\mid$为子树的叶节点个数   Logistic Regression     1.batch_size如何选择？线性神经元在均方误差代价函数的错误面是一个抛物面，横截面是椭圆">
@@ -219,7 +219,7 @@
 <p>3). 一般来说，较高的acc对应的loss较低，但这不是绝对，毕竟他们是两个不同的东西, 有时候即使acc高，但是loss值也高.</p>
 <p><strong>References:</strong><br><a href="https://blog.csdn.net/momaojia/article/details/72877953" target="_blank" rel="noopener">keras中的一些小tips（一）</a> </p>
 <h2 id="3-训练集和测试集的选取"><a href="#3-训练集和测试集的选取" class="headerlink" title="3. 训练集和测试集的选取"></a>3. 训练集和测试集的选取</h2><p>1、训练集中样本数量要足够多，一般至少大于总样本数的50%<br>2、训练集和测试集必须从完整的数据集中<strong>均匀取样</strong>(各个类有相近的数量)。均匀取样的目的是希望减少训练集、测试集与原数据集之间的偏差。当样本数量足够多时，通过随机取样，便可以实现均匀取样的效果。（随机取样，可重复性差）</p>
-<h2 id="4-新手易犯的错误"><a href="#4-新手易犯的错误" class="headerlink" title="4. 新手易犯的错误"></a>4. 新手易犯的错误</h2><p>1). 数据规范化(感觉用标准化)<br>大体上说，规范化是指从数据中减去均值，然后再除以标准差的操作<br>通常这个操作对每个输入和输出特征是分别完成的<br>需要规范化数据的主要原因是，在神经网络中几乎所有的数据传输途径中，都是假设输入和输出的数据分布满足标准差接近于1，均值几乎为0。这个假设在深度学习中的每个地方都会出现，从权重因子的初始化，到活化函数，再到训练网络的优化算法<br>使用规范化是为了将所有输入的特征等价<br>2). </p>
+<h2 id="4-新手易犯的错误"><a href="#4-新手易犯的错误" class="headerlink" title="4. 新手易犯的错误"></a>4. 新手易犯的错误</h2><p>1).数据规范化(感觉用<code>标准化</code>更好些)<br>大体上说，规范化(normalize)是指从数据中减去均值，然后再除以标准差的操作<br>通常这个操作对每个输入和输出特征是分别完成的<br>需要规范化数据的主要原因是，在神经网络中几乎所有的数据传输途径中，都是假设输入和输出的数据分布满足标准差接近于1，均值几乎为0。这个假设在深度学习中的每个地方都会出现，从权重因子的初始化，到激活函数，再到训练网络的优化算法<br><strong>使用规范化是为了将所有输入的特征等价</strong>  </p>
 <p><strong>References:</strong><br><a href="https://zhuanlan.zhihu.com/p/29247151" target="_blank" rel="noopener">我搭的神经网络不work该怎么办！看看这11条新手最容易犯的错误</a> </p>
 
   </div>
