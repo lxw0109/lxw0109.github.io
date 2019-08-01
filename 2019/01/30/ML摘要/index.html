@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="References:Embeddings 1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include:1234blue:">
+    <meta name="description" content="1.Embeddings1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include: 1234blue:  (0.01359,">
 <meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ML摘要">
 <meta property="og:url" content="http://xiaoweiliu.cn/2019/01/30/ML摘要/index.html">
 <meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
-<meta property="og:description" content="References:Embeddings 1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include:1234blue:">
+<meta property="og:description" content="1.Embeddings1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include: 1234blue:  (0.01359,">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-30T14:52:17.183Z">
+<meta property="og:updated_time" content="2019-08-01T03:18:57.741Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ML摘要">
-<meta name="twitter:description" content="References:Embeddings 1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include:1234blue:">
+<meta name="twitter:description" content="1.Embeddings1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include: 1234blue:  (0.01359,">
     
     
         
@@ -95,7 +95,7 @@
 
     </div>
     <div id="toc">
-      
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Embeddings"><span class="toc-number">1.</span> <span class="toc-text">1.Embeddings</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-NFM与AFM用于CTR预估"><span class="toc-number">1.1.</span> <span class="toc-text">2.NFM与AFM用于CTR预估</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -159,9 +159,14 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p><strong>References</strong>:<br><a href="https://tensorflow.google.cn/guide/embedding" target="_blank" rel="noopener">Embeddings</a></p>
-<p>1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">blue:  (0.01359, 0.00075997, 0.24608, ..., -0.2524, 1.0048, 0.06259)</span><br><span class="line">blues:  (0.01396, 0.11887, -0.48963, ..., 0.033483, -0.10007, 0.1158)</span><br><span class="line">orange:  (-0.24776, -0.12359, 0.20986, ..., 0.079717, 0.23865, -0.014213)</span><br><span class="line">oranges:  (-0.35609, 0.21854, 0.080944, ..., -0.35413, 0.38511, -0.070976)</span><br></pre></td></tr></table></figure></p>
+    <h3 id="1-Embeddings"><a href="#1-Embeddings" class="headerlink" title="1.Embeddings"></a>1.<a href="https://tensorflow.google.cn/guide/embedding" target="_blank" rel="noopener">Embeddings</a></h3><p>1.An embedding is a mapping from discrete objects, such as words, to vectors of real numbers. For example, a 300-dimensional embedding for English words could include:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">blue:  (0.01359, 0.00075997, 0.24608, ..., -0.2524, 1.0048, 0.06259)</span><br><span class="line">blues:  (0.01396, 0.11887, -0.48963, ..., 0.033483, -0.10007, 0.1158)</span><br><span class="line">orange:  (-0.24776, -0.12359, 0.20986, ..., 0.079717, 0.23865, -0.014213)</span><br><span class="line">oranges:  (-0.35609, 0.21854, 0.080944, ..., -0.35413, 0.38511, -0.070976)</span><br></pre></td></tr></table></figure>
 <p>2.<strong>Is an embedding the same as an embedding layer?</strong><br>No. An embedding layer is a part of neural network, but an embedding is a more general concept.</p>
+<h4 id="2-NFM与AFM用于CTR预估"><a href="#2-NFM与AFM用于CTR预估" class="headerlink" title="2.NFM与AFM用于CTR预估"></a>2.<a href="https://zhuanlan.zhihu.com/p/40135103" target="_blank" rel="noopener">NFM与AFM用于CTR预估</a></h4><ul>
+<li>网络结构，通常，钻石型的网络结构往往优于其他结构</li>
+<li>隐藏层单元数不是越高越好，中间有一个临界值达到最优</li>
+<li>Dropout在数据量本来就很稀疏的情况下尽量不用，不同的数据集dropout表现差距比较大</li>
+</ul>
 
   </div>
 </article>
@@ -186,7 +191,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Embeddings"><span class="toc-number">1.</span> <span class="toc-text">1.Embeddings</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-NFM与AFM用于CTR预估"><span class="toc-number">1.1.</span> <span class="toc-text">2.NFM与AFM用于CTR预估</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
