@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Batch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布 References:Implementing Batch Normalization in Tensorflow">
+    <meta name="description" content="1.Implementing Batch Normalization in TensorflowBatch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布(激活函数的输入)  Batch normalization enables the use of higher learning rates, acts as a">
 <meta name="keywords" content="Machine Learning,Deep Learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Batch Normalization">
 <meta property="og:url" content="http://xiaoweiliu.cn/2019/01/25/Batch-Normalization/index.html">
 <meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
-<meta property="og:description" content="Batch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布 References:Implementing Batch Normalization in Tensorflow">
+<meta property="og:description" content="1.Implementing Batch Normalization in TensorflowBatch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布(激活函数的输入)  Batch normalization enables the use of higher learning rates, acts as a">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-25T07:07:25.641Z">
+<meta property="og:updated_time" content="2019-08-04T15:14:58.736Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Batch Normalization">
-<meta name="twitter:description" content="Batch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布 References:Implementing Batch Normalization in Tensorflow">
+<meta name="twitter:description" content="1.Implementing Batch Normalization in TensorflowBatch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布(激活函数的输入)  Batch normalization enables the use of higher learning rates, acts as a">
     
     
         
@@ -97,7 +97,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#References"><span class="toc-number">1.</span> <span class="toc-text">References:</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Implementing-Batch-Normalization-in-Tensorflow"><span class="toc-number">1.</span> <span class="toc-text">1.Implementing Batch Normalization in Tensorflow</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -161,8 +161,11 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>Batch Normalization 处理的是<strong>各个激活函数的输入</strong>，从而使得<strong>每个batch内的数据</strong>的分布为均值0，标准差为1的标准正态分布</p>
-<h3 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h3><p><a href="https://r2rt.com/implementing-batch-normalization-in-tensorflow.html" target="_blank" rel="noopener">Implementing Batch Normalization in Tensorflow</a></p>
+    <h3 id="1-Implementing-Batch-Normalization-in-Tensorflow"><a href="#1-Implementing-Batch-Normalization-in-Tensorflow" class="headerlink" title="1.Implementing Batch Normalization in Tensorflow"></a>1.<a href="https://r2rt.com/implementing-batch-normalization-in-tensorflow.html" target="_blank" rel="noopener">Implementing Batch Normalization in Tensorflow</a></h3><p>Batch Normalization 处理的是<strong>各个激活函数的输入</strong>，从而使得<strong>每个batch内的数据</strong>的分布为均值0，标准差为1的标准正态分布(激活函数的输入)</p>
+<ul>
+<li>Batch normalization enables the use of higher learning rates, acts as a regularizer and can speed up training by 14 times.</li>
+<li>To solve this problem, the BN2015 paper propposes the <code>batch normalization</code> of the input to the activation function of each nuron (e.g., each sigmoid or ReLU function) during training, so that the input to the activation function across each training batch has a mean of 0 and a variance of 1. For example, applying batch normalization to the activation σ(Wx+b)  would result in σ(BN(Wx+b)) where BN is the <em>batch normalizing transform</em>.</li>
+</ul>
 
   </div>
 </article>
@@ -187,7 +190,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#References"><span class="toc-number">1.</span> <span class="toc-text">References:</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Implementing-Batch-Normalization-in-Tensorflow"><span class="toc-number">1.</span> <span class="toc-text">1.Implementing Batch Normalization in Tensorflow</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
