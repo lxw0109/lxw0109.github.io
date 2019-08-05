@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Xiaowei Liu&#39;s Blog">
 <meta property="og:description" content="1.Implementing Batch Normalization in TensorflowBatch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布(激活函数的输入)  Batch normalization enables the use of higher learning rates, acts as a">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-04T15:14:58.736Z">
+<meta property="og:updated_time" content="2019-08-05T07:32:27.693Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Batch Normalization">
 <meta name="twitter:description" content="1.Implementing Batch Normalization in TensorflowBatch Normalization 处理的是各个激活函数的输入，从而使得每个batch内的数据的分布为均值0，标准差为1的标准正态分布(激活函数的输入)  Batch normalization enables the use of higher learning rates, acts as a">
@@ -166,6 +166,12 @@
 <li>Batch normalization enables the use of higher learning rates, acts as a regularizer and can speed up training by 14 times.</li>
 <li>To solve this problem, the BN2015 paper propposes the <code>batch normalization</code> of the input to the activation function of each nuron (e.g., each sigmoid or ReLU function) during training, so that the input to the activation function across each training batch has a mean of 0 and a variance of 1. For example, applying batch normalization to the activation σ(Wx+b)  would result in σ(BN(Wx+b)) where BN is the <em>batch normalizing transform</em>.</li>
 </ul>
+<p>2.<a href="https://timodenk.com/blog/tensorflow-batch-normalization/" target="_blank" rel="noopener">Using TensorFlow’s Batch Normalization Correctly</a></p>
+<ul>
+<li>Use the training parameter of the batch_normalization function.</li>
+<li>Update the moving averages by evaluating the ops manually or by adding them as a control dependency.</li>
+</ul>
+<p>3.</p>
 
   </div>
 </article>
